@@ -141,6 +141,23 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
 .dlg .dlg-b li{margin-bottom:4px}
 .dlg .dlg-b small{color:var(--ink-soft)}
 @media print{.site-ft,dialog.dlg{display:none !important}}
+
+/* printable menu board */
+.menu-board{border:3px double var(--ink);border-radius:10px;padding:18px 20px;background:#fffdf6;color:#111;margin-top:14px}
+.menu-board h2{text-align:center;font-size:1.5rem;margin:0 0 12px;padding-bottom:10px;border-bottom:2px solid var(--chili)}
+.mrow{display:flex;align-items:baseline;gap:8px;padding:6px 0;font-size:1.08rem}
+.mrow i{flex:1;border-bottom:2px dotted #999;transform:translateY(-4px)}
+.mrow b{font-variant-numeric:tabular-nums;white-space:nowrap}
+#menuPrint{display:none}
+@page{size:A4;margin:14mm}
+@media print{
+  body{background:#fff}
+  header.top,main{display:none}
+  #menuPrint{display:block}
+  #menuPrint .menu-board{border-width:5px;padding:14mm 12mm;margin:0;border-radius:0;background:#fff}
+  #menuPrint h2{font-size:30pt;margin-bottom:8mm;padding-bottom:6mm}
+  #menuPrint .mrow{font-size:19pt;padding:3.2mm 0}
+}
 </style>
 </head>
 <body>
@@ -176,6 +193,13 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
       <div class="row" style="justify-content:space-between"><h2 style="margin:0">ของที่ต้องซื้อ</h2><button class="btn small alt" id="copyPlan" type="button">คัดลอกรายการ</button></div>
       <div class="tbl-wrap"><table class="t" id="planTable" style="margin-top:10px"></table></div>
     </div>
+  </div>
+  <div class="card" style="margin-top:16px;max-width:640px">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">ป้ายเมนูร้าน</h2><button class="btn small" id="menuPrintBtn" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="9" rx="2"/><rect x="7" y="14" width="10" height="7"/></svg>พิมพ์ป้ายเมนู</button></div>
+    <label class="f" style="margin:12px 0">ชื่อร้าน<input type="text" id="mShop" placeholder="เช่น ครัวป้าน้อย"></label>
+    <div id="menuRows"></div>
+    <div id="menuPrev"></div>
+    <p class="note">ป้ายเมนูใช้เมนูจากรายการด้านบน ราคาตั้งต้นคือราคาขายแนะนำ แก้เป็นราคาของร้านคุณได้ พิมพ์ออกมาเป็นกระดาษ A4 แนวตั้ง</p>
   </div>
 </section>
 
@@ -237,14 +261,14 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
 <footer class="site-ft"><button type="button" data-open="dlgGuide">วิธีใช้</button><button type="button" data-open="dlgPolicy">นโยบายความเป็นส่วนตัวและความปลอดภัย</button><a href="https://github.com/rookiekrit6-dotcom/FoodTool/issues">แจ้งปัญหาหรือเสนอแนะ</a><span>ใช้ฟรี ไม่ต้องสมัครสมาชิก</span></footer>
 <dialog class="dlg" id="dlgGuide" aria-labelledby="dlgGuideT"><div class="dlg-h"><b id="dlgGuideT">วิธีใช้ สูตรเปิดร้าน</b><button class="dlg-x" type="button" data-close>ปิด</button></div><div class="dlg-b"><h3>ดูสูตรและต้นทุน</h3><ol><li>เลือกเมนูจากหน้าสูตร แล้วใส่จำนวนจานที่จะทำ ปริมาณวัตถุดิบจะปรับตาม</li><li>ใส่ค่าบรรจุภัณฑ์และค่าแก๊สต่อจาน เพื่อดูต้นทุนรวมและราคาขายที่แนะนำ</li><li>ใส่ราคาที่ตั้งขายจริงและจำนวนจานต่อวัน เพื่อดูกำไรต่อวันและต่อเดือน</li></ol>
 <h3>แก้ราคาวัตถุดิบ</h3><p>ราคาตั้งต้นเป็นค่าประมาณ เปิดแท็บราคาของ แล้วแก้เป็นราคาที่คุณซื้อจริง ต้นทุนทุกสูตรจะคำนวณใหม่ทันที</p>
-<h3>รายการซื้อของ</h3><ol><li>ในหน้าสูตร กดเพิ่มในรายการซื้อของ ทำซ้ำกับทุกเมนูที่จะขาย</li><li>เปิดแท็บซื้อของ จะเห็นของที่ต้องซื้อรวมทุกเมนู และเงินที่ต้องเตรียม</li><li>กดคัดลอกรายการ เพื่อส่งเข้า LINE หรือจดไปตลาด</li></ol>
+<h3>รายการซื้อของ</h3><ol><li>ในหน้าสูตร กดเพิ่มในรายการซื้อของ ทำซ้ำกับทุกเมนูที่จะขาย</li><li>เปิดแท็บซื้อของ จะเห็นของที่ต้องซื้อรวมทุกเมนู และเงินที่ต้องเตรียม</li><li>กดคัดลอกรายการ เพื่อส่งเข้า LINE หรือจดไปตลาด</li><li>ด้านล่างมีป้ายเมนูร้าน ใส่ชื่อร้าน แก้ราคา แล้วกดพิมพ์ป้ายเมนูติดหน้าร้านได้</li></ol>
 <h3>จุดคุ้มทุน</h3><p>เปิดแท็บจุดคุ้มทุน กรอกค่าใช้จ่ายประจำของร้าน แล้วดูว่าต้องขายวันละกี่จานจึงไม่ขาดทุน</p>
 <h3>สูตรและรูปของคุณเอง</h3><p>เพิ่มสูตรได้ที่แท็บเพิ่มสูตร และใส่รูปถ่ายอาหารของร้านได้ในหน้าสูตรแต่ละสูตร</p></div></dialog>
 <dialog class="dlg" id="dlgPolicy" aria-labelledby="dlgPolicyT"><div class="dlg-h"><b id="dlgPolicyT">นโยบายความเป็นส่วนตัวและความปลอดภัยของข้อมูล</b><button class="dlg-x" type="button" data-close>ปิด</button></div><div class="dlg-b">
 <p><small>ปรับปรุงล่าสุด 15 พฤศจิกายน 2569</small></p>
 <p>สูตรเปิดร้านเป็นเครื่องมือที่ทำงานในเบราว์เซอร์ของคุณทั้งหมด ไม่มีระบบสมาชิก และไม่มีเซิร์ฟเวอร์ของเราที่รับหรือเก็บข้อมูลที่คุณกรอก</p>
 <h3>ข้อมูลที่เว็บนี้เก็บ</h3>
-<ul><li>ราคาวัตถุดิบที่คุณแก้ รายการซื้อของ ตัวเลขในหน้าจุดคุ้มทุน สูตรที่คุณเพิ่มเอง และรูปถ่ายที่คุณใส่ เก็บไว้ในเบราว์เซอร์ของเครื่องนี้เท่านั้น</li><li>รูปถ่ายไม่ถูกอัปโหลดไปที่ใด คนอื่นที่เปิดเว็บนี้จะไม่เห็นสูตรและรูปของคุณ</li></ul>
+<ul><li>ราคาวัตถุดิบที่คุณแก้ รายการซื้อของ ชื่อร้านและราคาในป้ายเมนู ตัวเลขในหน้าจุดคุ้มทุน สูตรที่คุณเพิ่มเอง และรูปถ่ายที่คุณใส่ เก็บไว้ในเบราว์เซอร์ของเครื่องนี้เท่านั้น</li><li>รูปถ่ายไม่ถูกอัปโหลดไปที่ใด คนอื่นที่เปิดเว็บนี้จะไม่เห็นสูตรและรูปของคุณ</li></ul>
 <h3>สิ่งที่เว็บนี้ไม่ทำ</h3>
 <ul><li>ไม่มีการสมัครสมาชิก ไม่ขออีเมลหรือรหัสผ่านของคุณ</li><li>ไม่ส่งข้อมูลที่คุณกรอกออกไปนอกเครื่อง</li><li>ไม่ใช้คุกกี้ติดตาม ไม่มีโฆษณา และไม่มีระบบวิเคราะห์ผู้เข้าชม ณ วันที่ปรับปรุงนโยบายนี้</li></ul>
 <h3>ผู้ให้บริการภายนอก</h3>
@@ -256,6 +280,7 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
 <h3>การเปลี่ยนแปลงและการติดต่อ</h3>
 <p>หากในอนาคตมีการเพิ่มระบบนับผู้เข้าชม โฆษณา หรือการเก็บข้อมูลแบบอื่น นโยบายนี้จะได้รับการปรับปรุงก่อนเปิดใช้ ติดต่อผู้จัดทำได้ที่หน้า <a href="https://github.com/rookiekrit6-dotcom/FoodTool/issues">แจ้งปัญหาหรือเสนอแนะ</a></p></div></dialog>
 
+<div id="menuPrint"></div>
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
@@ -544,6 +569,19 @@ function renderPlan(){
   $('planItems').innerHTML = ids.length ? ids.map(id => `<div class="plan-item"><span>${esc(findRecipe(id).name)}</span><input type="number" min="1" value="${d.plan[id]}" data-plan="${id}" aria-label="จำนวนจาน ${esc(findRecipe(id).name)}" inputmode="numeric"><button class="btn small danger" type="button" data-rm="${id}">ลบ</button></div>`).join('') : '<p class="empty">ยังไม่มีเมนูในรายการ</p>';
   $('planTable').innerHTML = d.rows.length ? `<tr><th>วัตถุดิบ</th><th class="r">ใช้</th><th class="r">ต้องซื้อ</th><th class="r">จ่าย (บาท)</th></tr>` + d.rows.map(r => `<tr><td>${esc(r.name)}</td><td class="r">${qtyText(r.qty, r.unit)}</td><td class="r">${esc(r.buy)}</td><td class="r">${b0(r.pay)}</td></tr>`).join('')
     + `<tr class="sum"><td>เงินที่ต้องเตรียม</td><td></td><td></td><td class="r">${b0(d.pay)}</td></tr><tr class="sum"><td>มูลค่าที่ใช้จริง</td><td></td><td></td><td class="r">${b0(d.used)}</td></tr>` : '<tr><td class="empty">เพิ่มเมนูก่อน แล้วรายการของที่ต้องซื้อจะแสดงที่นี่</td></tr>';
+  renderMenu();
+}
+function renderMenu(){
+  const plan = store.get('rc_plan', {}), ids = Object.keys(plan).filter(findRecipe), menu = store.get('rc_menu', {});
+  $('mShop').value = store.get('rc_shop', '');
+  $('menuRows').innerHTML = ids.length ? ids.map(id => { const r = findRecipe(id), pr = menu[id] != null ? menu[id] : roundUp5((plateCost(r) + 5) / 0.45);
+    return `<div class="plan-item" style="grid-template-columns:1fr 96px"><span>${esc(r.name)}</span><input type="number" min="0" step="1" value="${pr}" data-menu="${id}" aria-label="ราคาขาย ${esc(r.name)}" inputmode="decimal"></div>`; }).join('') : '<p class="empty">เพิ่มเมนูในรายการด้านบนก่อน</p>';
+  drawBoard();
+}
+function drawBoard(){
+  const rows = [...document.querySelectorAll('[data-menu]')].map(i => [findRecipe(i.dataset.menu).name, i.value]);
+  const html = rows.length ? `<div class="menu-board"><h2>${esc($('mShop').value.trim() || 'เมนูของร้าน')}</h2>${rows.map(r => `<div class="mrow"><span>${esc(r[0])}</span><i></i><b>${esc(r[1])} บาท</b></div>`).join('')}</div>` : '';
+  $('menuPrev').innerHTML = html; $('menuPrint').innerHTML = html;
 }
 function renderPrices(){
   $('priceGrid').innerHTML = Object.entries(CAT).map(([k, c]) => `<label><span>${esc(c[0])}<small>${esc(c[3])}</small></span><input type="number" min="0" step="1" value="${prices[k]}" data-price="${k}" inputmode="decimal"></label>`).join('');
@@ -597,6 +635,11 @@ $('mSave').addEventListener('click', () => {
   ['mName','mIng','mSteps'].forEach(id => $(id).value = ''); msg.textContent = '';
   location.hash = '#r-' + r.id;
 });
+$('v-plan').addEventListener('input', e => {
+  if (e.target.dataset.menu){ const m = store.get('rc_menu', {}); m[e.target.dataset.menu] = e.target.value; store.set('rc_menu', m); drawBoard(); }
+  if (e.target.id === 'mShop'){ store.set('rc_shop', e.target.value); drawBoard(); }
+});
+$('menuPrintBtn').addEventListener('click', () => { if ($('menuPrint').innerHTML) window.print(); });
 addEventListener('hashchange', route);
 route();
 /* ---------- guide + policy dialogs ---------- */
