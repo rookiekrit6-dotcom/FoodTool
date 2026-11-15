@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>สูตรเปิดร้าน</title>
 <meta name="description" content="สูตรอาหารสำหรับคนเปิดร้าน พร้อมคำนวณต้นทุนต่อจาน ราคาขายที่ควรตั้ง กำไรต่อวัน และรายการซื้อของ ใช้ฟรี">
+<meta property="og:type" content="website">
+<meta property="og:title" content="สูตรเปิดร้าน สูตรอาหารพร้อมต้นทุนและราคาขาย">
+<meta property="og:description" content="สูตรอาหารขายดีกว่า 40 เมนู พร้อมต้นทุนต่อจาน ราคาที่ควรตั้ง รายการซื้อของ จุดคุ้มทุน และป้ายเมนูร้าน ใช้ฟรี ไม่ต้องสมัคร">
+<meta property="og:url" content="https://rookiekrit6-dotcom.github.io/FoodTool/">
+<meta property="og:image" content="https://rookiekrit6-dotcom.github.io/FoodTool/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2040%2040%27%3E%3Crect%20width%3D%2740%27%20height%3D%2740%27%20rx%3D%278%27%20fill%3D%27%232e6b3a%27/%3E%3Cpath%20d%3D%27M6%2021h28a14%2012%200%200%201-28%200z%27%20fill%3D%27%23fdfdf6%27/%3E%3Cpath%20d%3D%27M15%2015c-2-3%202-4%200-7M20%2015c-2-3%202-4%200-7M25%2015c-2-3%202-4%200-7%27%20fill%3D%27none%27%20stroke%3D%27%23f6c443%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
@@ -164,6 +173,12 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
 .sbar div{height:12px;background:var(--line);border-radius:6px;overflow:hidden}
 .sbar i{display:block;height:100%;border-radius:6px;background:var(--leaf)}
 .sbar b{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* opening-day checklist */
+.chk{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.chk label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.chk input{width:18px;height:18px;margin-top:4px;flex:none;accent-color:var(--leaf)}
+.chk input:checked+span{color:var(--ink-soft);text-decoration:line-through}
 </style>
 </head>
 <body>
@@ -188,6 +203,21 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
   </div>
   <div class="chips" id="chips" role="group" aria-label="หมวดอาหาร"></div>
   <div class="cards" id="cards"></div>
+  <div class="card" style="margin-top:18px;max-width:720px">
+    <h2>เช็กลิสต์ก่อนเปิดร้านวันแรก</h2>
+    <ul class="chk">
+      <li><label><input type="checkbox"><span>คำนวณต้นทุนและตั้งราคาครบทุกเมนู โดยทุกเมนูยังเหลือกำไรหลังรวมค่ากล่องและค่าแก๊ส</span></label></li>
+      <li><label><input type="checkbox"><span>รู้จำนวนจานที่ต้องขายต่อวันเพื่อให้ถึงจุดคุ้มทุน</span></label></li>
+      <li><label><input type="checkbox"><span>ลองทำทุกเมนูจริงอย่างน้อย 3 รอบ จับเวลาต่อจาน และชั่งปริมาณให้เท่ากันทุกครั้ง</span></label></li>
+      <li><label><input type="checkbox"><span>จดแหล่งซื้อวัตถุดิบหลักและแหล่งสำรองอย่างน้อยอย่างละ 1 ที่</span></label></li>
+      <li><label><input type="checkbox"><span>เตรียมเงินทอน และเปิดรับเงินโอนผ่านคิวอาร์โค้ด</span></label></li>
+      <li><label><input type="checkbox"><span>ทำป้ายเมนูพร้อมราคาที่อ่านได้ชัดจากระยะ 3 เมตร</span></label></li>
+      <li><label><input type="checkbox"><span>เตรียมบรรจุภัณฑ์สำหรับซื้อกลับบ้านให้พอสำหรับ 2 เท่าของยอดที่คาดไว้</span></label></li>
+      <li><label><input type="checkbox"><span>ตรวจข้อกำหนดของพื้นที่ที่ตั้งร้านกับเจ้าของที่หรือหน่วยงานท้องถิ่น</span></label></li>
+      <li><label><input type="checkbox"><span>วันแรกเปิดขายเมนูน้อย ๆ ที่ทำได้คล่องที่สุดก่อน แล้วค่อยเพิ่มเมนู</span></label></li>
+      <li><label><input type="checkbox"><span>จดยอดขายแต่ละเมนูทุกวันในสัปดาห์แรก เพื่อตัดเมนูที่ขายไม่ออก</span></label></li>
+    </ul>
+  </div>
   <p class="note">ต้นทุนคำนวณจากราคาวัตถุดิบโดยประมาณ ราคาจริงต่างกันตามพื้นที่และฤดูกาล แก้เป็นราคาตลาดใกล้คุณได้ที่แท็บราคาวัตถุดิบ รูปประกอบเป็นภาพวาด คุณใส่รูปถ่ายอาหารของร้านตัวเองได้ในหน้าสูตร</p>
 </section>
 
@@ -279,6 +309,7 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
 <h3>แก้ราคาวัตถุดิบ</h3><p>ราคาตั้งต้นเป็นค่าประมาณ เปิดแท็บราคาของ แล้วแก้เป็นราคาที่คุณซื้อจริง ต้นทุนทุกสูตรจะคำนวณใหม่ทันที</p>
 <h3>รายการซื้อของ</h3><ol><li>ในหน้าสูตร กดเพิ่มในรายการซื้อของ ทำซ้ำกับทุกเมนูที่จะขาย</li><li>เปิดแท็บซื้อของ จะเห็นของที่ต้องซื้อรวมทุกเมนู และเงินที่ต้องเตรียม</li><li>กดคัดลอกรายการ เพื่อส่งเข้า LINE หรือจดไปตลาด</li><li>ด้านล่างมีสรุปแผนร้านใน 1 หน้า แสดงรายได้ ต้นทุน และเงินที่เจ้าของเหลือต่อเดือน พร้อมบอกว่าเมนูไหนทำกำไรมากที่สุด</li><li>ถัดลงไปมีป้ายเมนูร้าน ใส่ชื่อร้าน แก้ราคา แล้วกดพิมพ์ป้ายเมนูติดหน้าร้านได้</li></ol>
 <h3>จุดคุ้มทุน</h3><p>เปิดแท็บจุดคุ้มทุน กรอกค่าใช้จ่ายประจำของร้าน แล้วดูว่าต้องขายวันละกี่จานจึงไม่ขาดทุน</p>
+<h3>ค้นหาและเรียงเมนู</h3><p>ในหน้าสูตร พิมพ์ชื่อเมนูเพื่อค้นหา หรือเรียงตามต้นทุนต่ำสุด กำไรต่อจานสูงสุด และเวลาทำ</p>
 <h3>สูตรและรูปของคุณเอง</h3><p>เพิ่มสูตรได้ที่แท็บเพิ่มสูตร และใส่รูปถ่ายอาหารของร้านได้ในหน้าสูตรแต่ละสูตร</p></div></dialog>
 <dialog class="dlg" id="dlgPolicy" aria-labelledby="dlgPolicyT"><div class="dlg-h"><b id="dlgPolicyT">นโยบายความเป็นส่วนตัวและความปลอดภัยของข้อมูล</b><button class="dlg-x" type="button" data-close>ปิด</button></div><div class="dlg-b">
 <p><small>ปรับปรุงล่าสุด 15 พฤศจิกายน 2569</small></p>
@@ -331,7 +362,8 @@ const CAT = {
   banana:['กล้วยน้ำว้า',12,'ลูก','1 หวี ราว 12 ลูก',35], sesame:['งาขาว',500,'ก.','ถุง 500 ก.',70], cocoa:['ผงโกโก้',500,'ก.','ถุง 500 ก.',150],
   tapioca:['แป้งมัน',500,'ก.','ถุง 500 ก.',20], morningGlory:['ผักบุ้ง',1000,'ก.','1 กก.',30], redCurry:['พริกแกงพะแนง',1000,'ก.','1 กก.',120],
   corn:['ข้าวโพดหวานต้ม',1000,'ก.','1 กก.',45], chiliSauce:['น้ำจิ้มไก่',700,'มล.','ขวด 700 มล.',35], softTofu:['เต้าหู้ไข่',4,'หลอด','แพ็ก 4 หลอด',30],
-  instantNoodle:['บะหมี่กึ่งสำเร็จรูป',10,'ซอง','แพ็ก 10 ซอง',65], bread:['ขนมปังแผ่น',20,'แผ่น','1 แถว ราว 20 แผ่น',42], margarine:['มาการีน',1000,'ก.','1 กก.',85], syrup:['น้ำหวานเข้มข้นกลิ่นสละ',710,'มล.','ขวด 710 มล.',62]
+  instantNoodle:['บะหมี่กึ่งสำเร็จรูป',10,'ซอง','แพ็ก 10 ซอง',65], bread:['ขนมปังแผ่น',20,'แผ่น','1 แถว ราว 20 แผ่น',42], margarine:['มาการีน',1000,'ก.','1 กก.',85], syrup:['น้ำหวานเข้มข้นกลิ่นสละ',710,'มล.','ขวด 710 มล.',62],
+  cabbage:['กะหล่ำปลี',1000,'ก.','1 กก.',25], sukiSauce:['น้ำจิ้มสุกี้',850,'มล.','ขวด 850 มล.',55], coffee:['ผงกาแฟโบราณ',500,'ก.','ถุง 500 ก.',90], soda:['โซดา',6,'ขวด','แพ็ก 6 ขวด',48]
 };
 const DEFAULT_PRICES = Object.fromEntries(Object.entries(CAT).map(([k, c]) => [k, c[4]]));
 let prices = Object.assign({}, DEFAULT_PRICES, store.get('rc_prices', {}));
@@ -481,7 +513,27 @@ const RECIPES = [
  {id:'pinkmilk', name:'นมชมพูเย็น', cat:'เครื่องดื่ม', min:3, art:['glass','#f3a6c0','#fbd9e5','#ffffff','#ffffff'],
   ing:[['syrup',30],['evaporated',40],['condensed',15],['ice',200]],
   steps:['ผสมน้ำหวานเข้มข้นกับนมข้นหวานและน้ำร้อนเล็กน้อย','คนให้เข้ากัน','เทใส่แก้วที่มีน้ำแข็งเต็ม','ราดนมข้นจืดด้านบน'],
-  tip:'ทำได้เร็วที่สุดในกลุ่มเครื่องดื่ม ไม่ต้องชง เหมาะกับช่วงที่ลูกค้าต่อคิวยาว'}
+  tip:'ทำได้เร็วที่สุดในกลุ่มเครื่องดื่ม ไม่ต้องชง เหมาะกับช่วงที่ลูกค้าต่อคิวยาว'},
+ {id:'suki', name:'สุกี้น้ำหมู', cat:'เส้น', min:10, art:['bowl','#e9b98a','#fdfdf6','#2f7d32','#c98b4a'],
+  ing:[['glassNoodle',40],['pork',60],['egg',1],['cabbage',60],['morningGlory',40],['celery',10],['sukiSauce',40],['garlic',5],['porkBone',60]],
+  steps:['แช่วุ้นเส้นให้นิ่ม หั่นผักเตรียมไว้','ต้มน้ำซุปให้เดือด ใส่หมูและผักก้านแข็งก่อน','ใส่วุ้นเส้นและผักใบ ตอกไข่ลงไป คนเบา ๆ','ตักใส่ชาม ราดน้ำจิ้มสุกี้ โรยกระเทียมเจียวและขึ้นฉ่าย'],
+  tip:'ทำสุกี้แห้งได้จากวัตถุดิบชุดเดียวกัน โดยผัดแทนต้ม ได้สองเมนูจากของชุดเดียว'},
+ {id:'cabbagepork', name:'ผัดกะหล่ำปลีน้ำปลาหมูราดข้าว', cat:'ข้าวราด', min:6, art:['plate','#fdfdf6','#cfe0a8','#b97a3c','#f6efcf'],
+  ing:[['rice',100],['cabbage',150],['pork',40],['garlic',10],['fishSauce',12],['sugar',2],['oil',20]],
+  steps:['ฉีกกะหล่ำปลีเป็นชิ้นใหญ่ ล้างและสะเด็ดน้ำให้แห้ง','เจียวกระเทียม ผัดหมูจนสุก','ใส่กะหล่ำปลี ผัดไฟแรงจัด','ราดน้ำปลาลงบนขอบกระทะร้อนให้หอม ใส่น้ำตาล ผัดต่อครู่เดียวแล้วตักราดข้าว'],
+  tip:'กะหล่ำปลีราคาถูกและเก็บได้นานกว่าผักใบ เหมาะเป็นเมนูประจำที่ต้นทุนนิ่ง'},
+ {id:'grilledchicken', name:'ไก่ย่างกับข้าวเหนียว', cat:'ของทอดและปิ้ง', min:45, art:['plate','#fdfdf6','#b0652a','#8a4a1c','#f6efcf'],
+  ing:[['chicken',220],['garlic',8],['pepper',1],['soy',10],['oyster',8],['palmSugar',5],['sticky',100],['chiliSauce',30]],
+  steps:['หมักไก่กับกระเทียม พริกไทย ซีอิ๊วขาว ซอสหอยนางรม และน้ำตาลปี๊บ อย่างน้อย 3 ชั่วโมง','ย่างบนเตาถ่านไฟอ่อน พลิกเป็นระยะจนสุกถึงกระดูก','เร่งไฟช่วงท้ายให้หนังเกรียมหอม','เสิร์ฟกับข้าวเหนียวและน้ำจิ้ม'],
+  tip:'ย่างให้สุกล่วงหน้า 80% แล้วย่างต่อเมื่อลูกค้าสั่ง จะไม่ต้องให้ลูกค้ารอนานและเนื้อไม่แห้ง'},
+ {id:'oldcoffee', name:'กาแฟโบราณเย็น', cat:'เครื่องดื่ม', min:5, art:['glass','#4a2c17','#b98a5a','#ffffff','#ffffff'],
+  ing:[['coffee',15],['condensed',30],['evaporated',30],['sugar',10],['ice',200]],
+  steps:['ชงผงกาแฟด้วยน้ำร้อนจัดผ่านถุงกรอง','คนน้ำตาลและนมข้นหวานขณะยังร้อน','เทใส่แก้วที่มีน้ำแข็งเต็ม','ราดนมข้นจืดด้านบน'],
+  tip:'ลูกค้ากาแฟมักซื้อทุกเช้า เป็นเมนูที่สร้างลูกค้าประจำได้ดีที่สุดในกลุ่มเครื่องดื่ม'},
+ {id:'limesoda', name:'น้ำมะนาวโซดา', cat:'เครื่องดื่ม', min:3, art:['glass','#e4ee9a','#f4f8c8','#ffffff','#ffffff'],
+  ing:[['soda',1],['lime',1.5],['sugar',25],['ice',150]],
+  steps:['ละลายน้ำตาลกับน้ำร้อนเล็กน้อยเป็นน้ำเชื่อม','บีบน้ำมะนาวใส่แก้ว เติมน้ำเชื่อม คนให้เข้ากัน','ใส่น้ำแข็ง','เติมโซดาตอนเสิร์ฟ เพื่อให้ยังซ่า'],
+  tip:'ทำน้ำเชื่อมเก็บไว้เป็นขวด ใช้ร่วมกับเครื่องดื่มทุกเมนูได้ และตวงง่ายกว่าน้ำตาลทราย'}
 ];
 let custom = store.get('rc_custom', []);
 const allRecipes = () => RECIPES.concat(custom);
