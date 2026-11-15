@@ -193,6 +193,16 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
 
 /* phones: two compact columns so 40+ recipes do not become one endless list */
 @media(max-width:520px){.cards{grid-template-columns:1fr 1fr;gap:10px}.rc .body{padding:9px 10px 11px;gap:2px}.rc b{font-size:.93rem}.rc .body span,.rc small{font-size:.78rem;line-height:1.35}}
+
+/* ingredient guide */
+.ing details{border-bottom:1px solid var(--line);padding:10px 0}
+.ing summary{cursor:pointer;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-weight:600}
+.ing summary small{font-weight:400;color:var(--ink-soft)}
+.ing dl{margin:8px 0 0;display:grid;gap:8px}
+.ing dt{font-size:.8rem;color:var(--ink-soft);font-weight:600}
+.ing dd{margin:2px 0 0;font-size:.95rem;line-height:1.55}
+.ing dd a{color:var(--leaf);font-weight:600;white-space:nowrap}
+.rules{margin:0;padding-left:1.2em;display:grid;gap:6px}
 </style>
 </head>
 <body>
@@ -202,7 +212,7 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
   <nav class="tabs" aria-label="เมนูหลัก">
     <a href="#recipes" data-tab="recipes"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM8 7h7"/></svg>สูตร</a>
     <a href="#plan" data-tab="plan"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h3l2.5 11h9.5l2-8H7"/><circle cx="10" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg>ซื้อของ</a>
-    <a href="#prices" data-tab="prices"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>ราคาของ</a>
+    <a href="#prices" data-tab="prices"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>วัตถุดิบ</a>
     <a href="#breakeven" data-tab="breakeven"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5M4 20h16"/><path d="M4 16l6-5 4 3 6-7"/></svg>จุดคุ้มทุน</a>
     <a href="#pos" data-tab="pos"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>ขายหน้าร้าน</a>
     <a href="#mine" data-tab="mine"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มสูตร</a>
@@ -281,6 +291,28 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
     <p class="note" style="margin:6px 0 14px">ราคาตั้งต้นเป็นค่าประมาณ กรุณาแก้เป็นราคาที่คุณซื้อจริง ต้นทุนทุกสูตรจะคำนวณใหม่ทันที และบันทึกไว้ในเครื่องนี้</p>
     <div class="price-grid" id="priceGrid"></div>
   </div>
+  <div class="card" style="margin-top:16px">
+    <h2>หลักการซื้อและเก็บวัตถุดิบสำหรับร้าน</h2>
+    <ol class="rules">
+      <li><b>ของเข้าก่อนใช้ก่อน</b> วางของใหม่ไว้ด้านหลัง ของเก่าไว้ด้านหน้า และเขียนวันที่ซื้อบนถุงหรือกล่อง</li>
+      <li><b>แบ่งถุงตามปริมาณที่ใช้ต่อวัน</b> เนื้อสัตว์และอาหารทะเลให้แบ่งก่อนแช่ จะได้ละลายเท่าที่ใช้ ไม่ต้องละลายแล้วแช่ซ้ำ</li>
+      <li><b>ของเย็นต้องเย็นตลอด</b> ซื้อของสดเป็นอย่างสุดท้ายก่อนกลับร้าน และนำเข้าตู้เย็นทันที</li>
+      <li><b>แยกของดิบกับของพร้อมกิน</b> ใช้เขียงและมีดคนละชุด เก็บเนื้อดิบไว้ชั้นล่างสุดของตู้เย็น เพื่อไม่ให้น้ำจากเนื้อหยดใส่อาหารอื่น</li>
+      <li><b>ของเสียเร็วซื้อวันต่อวัน</b> เช่น ถั่วงอก ผักใบ เส้นสด และกะทิ ส่วนของแห้งและเครื่องปรุงซื้อครั้งละมากได้</li>
+      <li><b>จดราคาทุกครั้งที่ซื้อ</b> แล้วมาแก้ราคาในหน้านี้ ต้นทุนต่อจานจะตรงกับความจริง และรู้ทันเมื่อของขึ้นราคา</li>
+      <li><b>สงสัยให้ทิ้ง</b> ของที่มีกลิ่น สี หรือเนื้อสัมผัสผิดปกติ ไม่ควรนำมาทำขาย ต้นทุนของที่ทิ้งถูกกว่าความเสียหายจากลูกค้าป่วย</li>
+    </ol>
+  </div>
+  <div class="card ing" style="margin-top:16px">
+    <h2>คู่มือวัตถุดิบ</h2>
+    <div class="fields" style="max-width:560px;margin-bottom:6px">
+      <label class="f">ค้นหาวัตถุดิบ<input type="text" id="ingQ" placeholder="เช่น หมู มะนาว กะทิ"></label>
+      <label class="f">กลุ่ม
+        <select id="ingG" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;width:100%"></select></label>
+    </div>
+    <div id="ingList"></div>
+    <p class="note">คำแนะนำการเลือกซื้อและเก็บรักษาเป็นหลักทั่วไป อายุการเก็บจริงขึ้นกับความสดตอนซื้อและอุณหภูมิของตู้เย็น ให้ยึดวันหมดอายุบนฉลากและสภาพของจริงเป็นหลัก</p>
+  </div>
 </section>
 
 <section class="view" id="v-breakeven">
@@ -353,7 +385,7 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
 </div></main>
 <footer class="site-ft"><button type="button" data-open="dlgGuide">วิธีใช้</button><button type="button" data-open="dlgPolicy">นโยบายความเป็นส่วนตัวและความปลอดภัย</button><a href="https://www.facebook.com/profile.php?id=61594365461250" target="_blank" rel="noopener">แจ้งปัญหาหรือเสนอแนะทาง Facebook</a><span>ใช้ฟรี ไม่ต้องสมัครสมาชิก</span><span class="sis">เครื่องมืออื่นจากผู้จัดทำเดียวกัน: <a href="https://rookiekrit6-dotcom.github.io/Seller-Tool/">กำไรแม่ค้า</a><a href="https://rookiekrit6-dotcom.github.io/Worksheet/">ใบงานพร้อมพิมพ์</a></span></footer>
 <dialog class="dlg" id="dlgGuide" aria-labelledby="dlgGuideT"><div class="dlg-h"><b id="dlgGuideT">วิธีใช้ สูตรเปิดร้าน</b><button class="dlg-x" type="button" data-close>ปิด</button></div><div class="dlg-b"><h3>ดูสูตรและต้นทุน</h3><ol><li>เลือกเมนูจากหน้าสูตร แล้วใส่จำนวนจานที่จะทำ ปริมาณวัตถุดิบจะปรับตาม</li><li>ใส่ค่าบรรจุภัณฑ์และค่าแก๊สต่อจาน เพื่อดูต้นทุนรวมและราคาขายที่แนะนำ</li><li>ใส่ราคาที่ตั้งขายจริงและจำนวนจานต่อวัน เพื่อดูกำไรต่อวันและต่อเดือน</li></ol>
-<h3>แก้ราคาวัตถุดิบ</h3><p>ราคาตั้งต้นเป็นค่าประมาณ เปิดแท็บราคาของ แล้วแก้เป็นราคาที่คุณซื้อจริง ต้นทุนทุกสูตรจะคำนวณใหม่ทันที</p>
+<h3>วัตถุดิบ</h3><p>ราคาตั้งต้นเป็นค่าประมาณ เปิดแท็บวัตถุดิบ แล้วแก้เป็นราคาที่คุณซื้อจริง ต้นทุนทุกสูตรจะคำนวณใหม่ทันที ด้านล่างมีหลักการซื้อและเก็บของสำหรับร้าน และคู่มือวัตถุดิบทุกรายการ บอกวิธีเลือกซื้อ วิธีเก็บ และเมนูที่ใช้</p>
 <h3>รายการซื้อของ</h3><ol><li>ในหน้าสูตร กดเพิ่มในรายการซื้อของ ทำซ้ำกับทุกเมนูที่จะขาย</li><li>เปิดแท็บซื้อของ จะเห็นของที่ต้องซื้อรวมทุกเมนู และเงินที่ต้องเตรียม</li><li>กดคัดลอกรายการ เพื่อส่งเข้า LINE หรือจดไปตลาด</li><li>ด้านล่างมีสรุปแผนร้านใน 1 หน้า แสดงรายได้ ต้นทุน และเงินที่เจ้าของเหลือต่อเดือน พร้อมบอกว่าเมนูไหนทำกำไรมากที่สุด</li><li>ถัดลงไปมีป้ายเมนูร้าน ใส่ชื่อร้าน แก้ราคา แล้วกดพิมพ์ป้ายเมนูติดหน้าร้านได้</li></ol>
 <h3>จุดคุ้มทุน</h3><p>เปิดแท็บจุดคุ้มทุน กรอกค่าใช้จ่ายประจำของร้าน แล้วดูว่าต้องขายวันละกี่จานจึงไม่ขาดทุน</p>
 <h3>ขายหน้าร้าน</h3><ol><li>เปิดแท็บขายหน้าร้าน แตะเมนูที่ลูกค้าสั่งเพื่อรวมยอด</li><li>ใส่เงินที่รับมาเพื่อดูเงินทอน แล้วกดจบบิล</li><li>ดูยอดขาย จำนวนบิล และเมนูที่ขายดีของวันนี้ได้ด้านล่าง</li></ol>
@@ -781,7 +813,63 @@ function renderSummary(){
     <h3>เมนูไหนทำกำไรให้ร้านมากที่สุดต่อวัน</h3>
     ${rows.map(r => `<div class="sbar"><span>${esc(r.name)} × ${b0(r.n)}</span><div><i style="width:${Math.max(2, Math.abs(r.profit) / span * 100)}%;background:${r.profit < 0 ? 'var(--bad)' : 'var(--leaf)'}"></i></div><b>${b0(r.profit)} ฿</b></div>`).join('')}`;
 }
+// ingredient guide: group defaults plus notes for items that need their own advice
+const ING_GROUPS = {
+  meat:['เนื้อสัตว์','เลือกเนื้อสีสด ไม่มีกลิ่นผิดปกติ ผิวไม่เป็นเมือก และซื้อจากร้านที่แช่เย็นตลอดเวลา','แบ่งใส่ถุงตามปริมาณที่ใช้ต่อวัน ส่วนที่จะใช้ใน 1 ถึง 2 วันเก็บในตู้เย็น ที่เหลือแช่แข็ง ละลายในตู้เย็น ไม่วางทิ้งไว้ที่อุณหภูมิห้อง'],
+  sea:['อาหารทะเล','เลือกตัวที่เนื้อแน่น เปลือกใส หัวติดกับตัว ไม่มีกลิ่นฉุน','แช่น้ำแข็งหรือเข้าตู้เย็นทันทีที่ซื้อ ควรใช้ภายในวันที่ซื้อ ถ้าใช้ไม่หมดให้แช่แข็งตั้งแต่วันแรก'],
+  egg:['ไข่','เลือกไข่ที่เปลือกสะอาด ไม่ร้าว ไม่บุบ','เก็บในที่เย็นหรือตู้เย็น ไม่ต้องล้างก่อนเก็บ ใช้แผงเก่าให้หมดก่อนเปิดแผงใหม่ ไข่ที่เปลือกร้าวให้แยกใช้ก่อนหรือทิ้ง'],
+  veg:['ผักและผลไม้','เลือกที่สด สีสดใส ไม่ช้ำ ไม่เหี่ยว และไม่มีจุดเน่า','ล้างเมื่อจะใช้ เก็บในช่องผักของตู้เย็น ห่อกระดาษหรือใส่กล่องที่ระบายอากาศได้ ผักใบควรใช้ภายใน 2 ถึง 3 วัน'],
+  herb:['ผักสมุนไพร','เลือกใบสด ไม่ดำ ไม่ช้ำ และมีกลิ่นหอมชัด','ไม่ล้างก่อนเก็บ ห่อด้วยกระดาษซับความชื้น ใส่กล่องแล้วแช่ตู้เย็น ควรใช้ภายใน 2 ถึง 4 วัน'],
+  spice:['เครื่องเทศสด','เลือกหัวหรือเหง้าที่แน่น ไม่ฝ่อ ไม่ขึ้นรา','เก็บในที่แห้ง อากาศถ่ายเท ส่วนที่หั่นหรือปอกแล้วให้ใส่กล่องแช่ตู้เย็น'],
+  fresh:['ของสดแปรรูป','ดูวันผลิต เลือกของที่ทำใหม่ ไม่มีกลิ่นเปรี้ยว และซื้อจากร้านที่ขายหมดไว','เก็บในตู้เย็นทันที เป็นของเสียเร็ว ควรซื้อวันต่อวันและใช้ภายใน 1 ถึง 2 วัน'],
+  dry:['ของแห้ง','ตรวจวันผลิตและวันหมดอายุ ถุงไม่ฉีกขาด ไม่มีมอดและไม่มีกลิ่นอับ','เก็บในภาชนะปิดสนิท ในที่แห้งและเย็น ห่างจากพื้นและแสงแดด ใช้ของเก่าก่อนของใหม่'],
+  sauce:['เครื่องปรุง','ตรวจวันหมดอายุและดูว่าฝาปิดสนิท ขนาดใหญ่คุ้มกว่าถ้าใช้หมดทันก่อนหมดอายุ','ปิดฝาให้สนิทหลังใช้ เก็บให้พ้นแดดและความร้อนจากเตา ถ้าฉลากระบุให้แช่เย็นหลังเปิด ให้ทำตามฉลาก'],
+  dairy:['นมและกะทิ','ตรวจวันหมดอายุ กระป๋องหรือกล่องไม่บุบ ไม่บวม','ก่อนเปิดเก็บที่อุณหภูมิห้องได้ เปิดแล้วให้เทใส่ภาชนะมีฝา แช่ตู้เย็น และใช้ให้หมดภายในไม่กี่วัน'],
+  other:['อื่น ๆ','เลือกซื้อจากร้านที่เชื่อถือได้และดูสภาพบรรจุภัณฑ์','เก็บในที่สะอาด แห้ง และมีฝาปิด']
+};
+const ING_OF = { rice:'dry', sticky:'dry', porkMince:'meat', pork:'meat', porkBone:'meat', chicken:'meat', shrimp:'sea', egg:'egg', meatball:'fresh', tofu:'fresh', driedShrimp:'dry',
+  basil:'herb', chili:'spice', garlic:'spice', ginger:'spice', scallion:'herb', cucumber:'veg', lime:'veg', papaya:'veg', tomato:'veg', longBean:'veg', sprout:'veg', chive:'herb',
+  peanut:'dry', chanNoodle:'dry', riceNoodle:'fresh', oil:'sauce', oyster:'sauce', soy:'sauce', darkSoy:'sauce', fishSauce:'sauce', beanPaste:'sauce', sugar:'dry', palmSugar:'dry',
+  tamarind:'sauce', pepper:'dry', flour:'dry', coconut:'dairy', thaiTea:'dry', condensed:'dairy', evaporated:'dairy', ice:'other', skewer:'other', wideNoodle:'fresh', kale:'veg',
+  mushroom:'veg', lemongrass:'spice', galangal:'spice', kaffir:'herb', curryPaste:'sauce', eggplant:'veg', sweetBasil:'herb', roastedRice:'dry', chiliPowder:'dry', shallot:'spice',
+  mint:'herb', glassNoodle:'dry', celery:'herb', banana:'veg', sesame:'dry', cocoa:'dry', tapioca:'dry', morningGlory:'veg', redCurry:'sauce', corn:'veg', chiliSauce:'sauce',
+  softTofu:'fresh', instantNoodle:'dry', bread:'fresh', margarine:'dairy', syrup:'sauce', greenTea:'dry', plara:'sauce', crab:'sea', cabbage:'veg', sukiSauce:'sauce', coffee:'dry', soda:'other' };
+// [how to pick, how to keep] for items whose advice differs from their group
+const ING_NOTE = {
+  porkMince:['เลือกหมูสับที่สีชมพูสด มีมันแทรกพอประมาณ หรือซื้อเป็นชิ้นแล้วให้ร้านบดให้ จะรู้ว่าเป็นเนื้อส่วนไหน','หมูสับเสียเร็วกว่าเนื้อชิ้น ควรใช้ภายในวันที่ซื้อหรือวันถัดไป ที่เหลือแบ่งถุงแบน ๆ แช่แข็ง จะละลายได้เร็ว'],
+  porkBone:['เลือกกระดูกที่ยังมีเนื้อติดและสีสด ไม่คล้ำ','ลวกน้ำเดือดทิ้ง 1 รอบก่อนต้มซุป น้ำซุปจะใส ส่วนที่ยังไม่ใช้แบ่งถุงแช่แข็ง'],
+  sprout:['เลือกต้นที่ขาว อวบ หัวไม่ดำ ไม่มีกลิ่นเปรี้ยว','เป็นผักที่เสียเร็วมาก แช่น้ำเย็นในตู้เย็นและเปลี่ยนน้ำทุกวัน ควรซื้อวันต่อวันและใช้ภายใน 1 ถึง 2 วัน'],
+  lime:['เลือกลูกที่ผิวบาง เปลือกเรียบ บีบแล้วนิ่มมือ จะมีน้ำมาก มะนาวมักแพงในหน้าแล้ง ควรปรับราคาในหน้านี้บ่อย ๆ','เก็บในตู้เย็นได้นานกว่าวางข้างนอก ช่วงราคาถูกคั้นน้ำแช่แข็งเป็นก้อนไว้ใช้ช่วงราคาแพงได้'],
+  garlic:['เลือกหัวที่แน่น แห้ง กลีบไม่ฝ่อและไม่งอก','เก็บในที่แห้งและอากาศถ่ายเท ไม่ต้องแช่เย็น กระเทียมที่ปอกหรือสับแล้วให้ใส่กล่องแช่ตู้เย็นและใช้ภายในไม่กี่วัน'],
+  shallot:['เลือกหัวที่แห้ง แน่น เปลือกเงา ไม่นิ่มและไม่งอก','เก็บในตะกร้าโปร่งที่อากาศถ่ายเท ไม่ต้องแช่เย็น'],
+  chili:['เลือกเม็ดที่ผิวตึง ขั้วเขียวสด ไม่เน่าและไม่มีรา','เด็ดขั้วออก ซับให้แห้ง ใส่กล่องรองกระดาษแล้วแช่ตู้เย็น หรือแช่แข็งทั้งเม็ดไว้ใช้ได้นาน'],
+  basil:['เลือกใบที่เขียวสด กลิ่นฉุน ไม่มีจุดดำ กะเพราใบเล็กมักหอมกว่าใบใหญ่','ช้ำและดำเร็วมากเมื่อโดนความเย็นจัด ห่อกระดาษใส่กล่อง วางที่ชั้นประตูตู้เย็น และซื้อวันต่อวันถ้าทำได้'],
+  papaya:['เลือกผลที่เขียวเข้ม เนื้อแข็ง เคาะแล้วเสียงแน่น','ผลทั้งลูกเก็บนอกตู้เย็นได้ 2 ถึง 3 วัน เส้นที่สับแล้วให้แช่น้ำเย็นจัดให้กรอบ และใช้ภายในวันนั้น'],
+  tomato:['เลือกผลที่แดงสม่ำเสมอ ผิวตึง ไม่ช้ำ','วางที่อุณหภูมิห้องถ้าจะใช้ใน 1 ถึง 2 วัน ถ้านานกว่านั้นให้เก็บในตู้เย็น'],
+  coconut:['กะทิสดคั้นใหม่หอมที่สุดแต่เสียเร็ว กะทิกล่องเก็บได้นานและรสคงที่กว่า เหมาะกับร้านที่ขายไม่แน่นอน','กะทิเสียเร็วที่สุดในกลุ่มนี้ กะทิสดควรใช้ภายในวันที่ซื้อ กะทิกล่องที่เปิดแล้วให้แช่ตู้เย็นและใช้ภายใน 1 ถึง 2 วัน ถ้ามีกลิ่นเปรี้ยวให้ทิ้ง'],
+  peanut:['เลือกถั่วที่เม็ดเต็ม สีสม่ำเสมอ ไม่มีกลิ่นหืน','เก็บในภาชนะปิดสนิท ถั่วที่มีรา มีกลิ่นหืน หรือรสขม ให้ทิ้งทั้งหมด ไม่ควรคัดเฉพาะเม็ดดีมาใช้'],
+  driedShrimp:['เลือกตัวที่สีส้มอมชมพูตามธรรมชาติ ไม่แดงจัด แห้งและไม่มีกลิ่นอับ','ใส่ภาชนะปิดสนิทแล้วเก็บในตู้เย็น จะอยู่ได้นานและไม่ขึ้นรา'],
+  ice:['ซื้อจากผู้ผลิตที่ได้มาตรฐานสำหรับน้ำแข็งบริโภค ถุงปิดสนิทและไม่วางกับพื้น','เก็บในถังสะอาดที่มีฝาปิด ใช้ที่ตักที่มีด้าม ไม่ใช้มือหรือแก้วตัก และไม่แช่ของอื่นปนกับน้ำแข็งที่ใช้ดื่ม'],
+  plara:['เลือกน้ำปลาร้าที่ต้มสุกและบรรจุขวดปิดสนิท มีฉลากและวันหมดอายุ','เปิดแล้วเก็บในตู้เย็น ถ้าใช้ปลาร้าดิบต้องต้มให้เดือดก่อนนำมาปรุงทุกครั้ง'],
+  crab:['เลือกปูดองที่ทำใหม่ จากร้านที่เก็บในความเย็น ไม่มีกลิ่นเหม็นผิดปกติ','เก็บในตู้เย็นหรือแช่แข็งตลอดเวลา นำออกมาเท่าที่ใช้ เป็นวัตถุดิบที่เสี่ยงต่อท้องเสีย ควรบอกลูกค้าทุกครั้งว่าเป็นของดิบ'],
+  wideNoodle:['เลือกเส้นที่ทำใหม่ในวันนั้น เส้นนุ่ม ไม่แข็ง และไม่มีกลิ่นเปรี้ยว','เส้นสดเสียเร็ว ควรซื้อวันต่อวัน ถ้าจำเป็นต้องเก็บให้ใส่ตู้เย็นและใช้ในวันถัดไป'],
+  bread:['ดูวันหมดอายุ เลือกแถวที่ผลิตใหม่ที่สุด','เก็บในที่แห้งและปิดปากถุงให้สนิท ถ้าพบจุดราแม้แผ่นเดียวให้ทิ้งทั้งแถว'],
+  oil:['เลือกขวดที่ปิดสนิทและดูวันหมดอายุ น้ำมันปาล์มทนความร้อนสำหรับงานทอด น้ำมันถั่วเหลืองเหมาะกับงานผัด','เก็บให้พ้นแสงและความร้อน น้ำมันทอดที่สีคล้ำ เหนียว มีฟองมาก หรือมีกลิ่นเหม็นหืนให้เปลี่ยนใหม่ ไม่เติมน้ำมันใหม่ผสมน้ำมันเก่าที่เสื่อมแล้ว'],
+  rice:['ข้าวเก่าหุงแล้วร่วน เหมาะกับข้าวผัดและข้าวราดแกง ข้าวใหม่นุ่มและเหนียวกว่า เหมาะกับข้าวสวยเสิร์ฟคู่กับข้าว','เก็บในถังปิดฝา ในที่แห้ง ใส่พริกแห้งหรือใบมะกรูดแห้งช่วยไล่มอดได้ ข้าวสวยที่หุงแล้วไม่ควรวางที่อุณหภูมิห้องนานหลายชั่วโมง'],
+  egg:null
+};
+function renderIngGuide(){
+  const use = {}; allRecipes().forEach(r => r.ing.forEach(i => { if (Array.isArray(i)) (use[i[0]] = use[i[0]] || []).push(r); }));
+  const sel = $('ingG'); if (!sel.options.length) sel.innerHTML = '<option value="">ทุกกลุ่ม</option>' + Object.entries(ING_GROUPS).map(([k, g]) => `<option value="${k}">${g[0]}</option>`).join('');
+  const q = $('ingQ').value.trim(), grp = sel.value;
+  const list = Object.keys(CAT).map(k => ({ k, c: CAT[k], g: ING_OF[k] || 'other', n: (use[k] || []).length })).filter(x => (!grp || x.g === grp) && (!q || x.c[0].includes(q))).sort((a, b) => b.n - a.n);
+  $('ingList').innerHTML = list.length ? list.map(x => { const G = ING_GROUPS[x.g], note = ING_NOTE[x.k] || [G[1], G[2]], rs = use[x.k] || [];
+    return `<details><summary>${esc(x.c[0])}<small>${G[0]} · ใช้ใน ${x.n} สูตร · ${esc(x.c[3])} ราว ${b0(prices[x.k])} บาท</small></summary><dl>
+      <div><dt>วิธีเลือกซื้อ</dt><dd>${esc(note[0])}</dd></div><div><dt>วิธีเก็บรักษา</dt><dd>${esc(note[1])}</dd></div>
+      <div><dt>ใช้ในเมนู</dt><dd>${rs.length ? rs.map(r => `<a href="#r-${r.id}">${esc(r.name)}</a>`).join(' · ') : 'ยังไม่มีสูตรที่ใช้วัตถุดิบนี้'}</dd></div></dl></details>`; }).join('') : '<p class="empty">ไม่พบวัตถุดิบที่ค้นหา</p>';
+}
 function renderPrices(){
+  renderIngGuide();
   $('priceGrid').innerHTML = Object.entries(CAT).map(([k, c]) => `<label><span>${esc(c[0])}<small>${esc(c[3])}</small></span><input type="number" min="0" step="1" value="${prices[k]}" data-price="${k}" inputmode="decimal"></label>`).join('');
 }
 
@@ -853,6 +941,8 @@ $('v-breakeven').addEventListener('input', e => {
   calcBE();
 });
 $('sets').addEventListener('click', e => { const b = e.target.closest('[data-kit]'); if (!b) return; const plan = store.get('rc_plan', {}); b.dataset.kit.split(',').forEach(id => { if (findRecipe(id) && !plan[id]) plan[id] = 20; }); store.set('rc_plan', plan); location.hash = '#plan'; });
+$('ingQ').addEventListener('input', renderIngGuide);
+$('ingG').addEventListener('change', renderIngGuide);
 $('q').addEventListener('input', renderCards);
 $('sort').addEventListener('change', renderCards);
 $('chips').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ filter = b.dataset.cat; renderCards(); } });
