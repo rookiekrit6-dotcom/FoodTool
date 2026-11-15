@@ -123,12 +123,30 @@ nav.tabs::-webkit-scrollbar{display:none}
 .be-bar b.up span{bottom:100%;padding-bottom:2px}
 .be-bar b.down span{top:100%;padding-top:2px}
 .be-bar b.r span{left:auto;right:0;transform:none}
+
+/* guide + policy dialogs, site footer */
+.help-btn{font:inherit;font-size:.85rem;font-weight:600;margin-left:8px;padding:3px 12px;border-radius:999px;border:1.5px solid rgba(255,255,255,.75);background:transparent;color:#fff;cursor:pointer;white-space:nowrap}
+.help-btn:hover{background:rgba(255,255,255,.16)}
+.site-ft{max-width:1080px;margin:0 auto;padding:4px 16px 40px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;font-size:.9rem;color:var(--ink-soft)}
+.site-ft button,.site-ft a{font:inherit;background:none;border:0;padding:0;color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+dialog.dlg{border:0;border-radius:16px;padding:0;width:100%;max-width:min(640px,calc(100% - 24px));max-height:calc(100% - 32px);background:#fff;color:var(--ink);box-shadow:0 24px 60px -20px rgba(0,0,0,.55)}
+dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
+.dlg .dlg-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff}
+.dlg .dlg-h b{font-size:1.1rem}
+.dlg .dlg-x{font:inherit;font-weight:700;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:6px 14px;cursor:pointer}
+.dlg .dlg-b{padding:6px 18px 22px;font-size:.97rem;line-height:1.65}
+.dlg .dlg-b h3{margin:16px 0 4px;font-size:1rem;color:var(--ink);font-weight:700}
+.dlg .dlg-b p{margin:0 0 8px}
+.dlg .dlg-b ol,.dlg .dlg-b ul{margin:0 0 8px;padding-left:1.3em;display:block}
+.dlg .dlg-b li{margin-bottom:4px}
+.dlg .dlg-b small{color:var(--ink-soft)}
+@media print{.site-ft,dialog.dlg{display:none !important}}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap">
   <h1><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h32a16 14 0 0 1-32 0z" fill="#fdfdf6"/><path d="M12 34h16" stroke="#fdfdf6" stroke-width="3" stroke-linecap="round"/><path d="M14 14c-2-3 2-4 0-7M20 14c-2-3 2-4 0-7M26 14c-2-3 2-4 0-7" fill="none" stroke="#f6c443" stroke-width="2.2" stroke-linecap="round"/></svg>สูตรเปิดร้าน</h1>
-  <p class="sub">สูตรอาหารขายดี พร้อมต้นทุนต่อจานและราคาที่ควรตั้ง</p>
+  <p class="sub">สูตรอาหารขายดี พร้อมต้นทุนต่อจานและราคาที่ควรตั้ง<button class="help-btn" type="button" data-open="dlgGuide">วิธีใช้</button></p>
   <nav class="tabs" aria-label="เมนูหลัก">
     <a href="#recipes" data-tab="recipes"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM8 7h7"/></svg>สูตร</a>
     <a href="#plan" data-tab="plan"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h3l2.5 11h9.5l2-8H7"/><circle cx="10" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg>ซื้อของ</a>
@@ -216,6 +234,27 @@ nav.tabs::-webkit-scrollbar{display:none}
 </section>
 
 </div></main>
+<footer class="site-ft"><button type="button" data-open="dlgGuide">วิธีใช้</button><button type="button" data-open="dlgPolicy">นโยบายความเป็นส่วนตัวและความปลอดภัย</button><a href="https://github.com/rookiekrit6-dotcom/FoodTool/issues">แจ้งปัญหาหรือเสนอแนะ</a><span>ใช้ฟรี ไม่ต้องสมัครสมาชิก</span></footer>
+<dialog class="dlg" id="dlgGuide" aria-labelledby="dlgGuideT"><div class="dlg-h"><b id="dlgGuideT">วิธีใช้ สูตรเปิดร้าน</b><button class="dlg-x" type="button" data-close>ปิด</button></div><div class="dlg-b"><h3>ดูสูตรและต้นทุน</h3><ol><li>เลือกเมนูจากหน้าสูตร แล้วใส่จำนวนจานที่จะทำ ปริมาณวัตถุดิบจะปรับตาม</li><li>ใส่ค่าบรรจุภัณฑ์และค่าแก๊สต่อจาน เพื่อดูต้นทุนรวมและราคาขายที่แนะนำ</li><li>ใส่ราคาที่ตั้งขายจริงและจำนวนจานต่อวัน เพื่อดูกำไรต่อวันและต่อเดือน</li></ol>
+<h3>แก้ราคาวัตถุดิบ</h3><p>ราคาตั้งต้นเป็นค่าประมาณ เปิดแท็บราคาของ แล้วแก้เป็นราคาที่คุณซื้อจริง ต้นทุนทุกสูตรจะคำนวณใหม่ทันที</p>
+<h3>รายการซื้อของ</h3><ol><li>ในหน้าสูตร กดเพิ่มในรายการซื้อของ ทำซ้ำกับทุกเมนูที่จะขาย</li><li>เปิดแท็บซื้อของ จะเห็นของที่ต้องซื้อรวมทุกเมนู และเงินที่ต้องเตรียม</li><li>กดคัดลอกรายการ เพื่อส่งเข้า LINE หรือจดไปตลาด</li></ol>
+<h3>จุดคุ้มทุน</h3><p>เปิดแท็บจุดคุ้มทุน กรอกค่าใช้จ่ายประจำของร้าน แล้วดูว่าต้องขายวันละกี่จานจึงไม่ขาดทุน</p>
+<h3>สูตรและรูปของคุณเอง</h3><p>เพิ่มสูตรได้ที่แท็บเพิ่มสูตร และใส่รูปถ่ายอาหารของร้านได้ในหน้าสูตรแต่ละสูตร</p></div></dialog>
+<dialog class="dlg" id="dlgPolicy" aria-labelledby="dlgPolicyT"><div class="dlg-h"><b id="dlgPolicyT">นโยบายความเป็นส่วนตัวและความปลอดภัยของข้อมูล</b><button class="dlg-x" type="button" data-close>ปิด</button></div><div class="dlg-b">
+<p><small>ปรับปรุงล่าสุด 15 พฤศจิกายน 2569</small></p>
+<p>สูตรเปิดร้านเป็นเครื่องมือที่ทำงานในเบราว์เซอร์ของคุณทั้งหมด ไม่มีระบบสมาชิก และไม่มีเซิร์ฟเวอร์ของเราที่รับหรือเก็บข้อมูลที่คุณกรอก</p>
+<h3>ข้อมูลที่เว็บนี้เก็บ</h3>
+<ul><li>ราคาวัตถุดิบที่คุณแก้ รายการซื้อของ ตัวเลขในหน้าจุดคุ้มทุน สูตรที่คุณเพิ่มเอง และรูปถ่ายที่คุณใส่ เก็บไว้ในเบราว์เซอร์ของเครื่องนี้เท่านั้น</li><li>รูปถ่ายไม่ถูกอัปโหลดไปที่ใด คนอื่นที่เปิดเว็บนี้จะไม่เห็นสูตรและรูปของคุณ</li></ul>
+<h3>สิ่งที่เว็บนี้ไม่ทำ</h3>
+<ul><li>ไม่มีการสมัครสมาชิก ไม่ขออีเมลหรือรหัสผ่านของคุณ</li><li>ไม่ส่งข้อมูลที่คุณกรอกออกไปนอกเครื่อง</li><li>ไม่ใช้คุกกี้ติดตาม ไม่มีโฆษณา และไม่มีระบบวิเคราะห์ผู้เข้าชม ณ วันที่ปรับปรุงนโยบายนี้</li></ul>
+<h3>ผู้ให้บริการภายนอก</h3>
+<ul><li>เว็บนี้ฝากไฟล์ไว้กับ GitHub Pages ซึ่งอาจบันทึกข้อมูลทางเทคนิคของการเข้าชม เช่น หมายเลข IP ตามนโยบายของ GitHub</li><li>ตัวอักษรบนหน้าเว็บโหลดจาก Google Fonts เบราว์เซอร์ของคุณจึงติดต่อเซิร์ฟเวอร์ของ Google เพื่อดาวน์โหลดไฟล์ตัวอักษร</li></ul>
+<h3>การดูแลข้อมูลของคุณเอง</h3>
+<ul><li>ถ้าใช้เครื่องร่วมกับคนอื่น ผู้ใช้เครื่องเดียวกันจะเห็นสูตรและตัวเลขที่คุณบันทึกไว้</li><li>ลบข้อมูลทั้งหมดได้ด้วยการล้างข้อมูลเว็บไซต์นี้ในการตั้งค่าของเบราว์เซอร์</li><li>ข้อมูลไม่ได้สำรองไว้ที่ใด ถ้าล้างข้อมูลเบราว์เซอร์หรือเปลี่ยนเครื่อง ข้อมูลจะหายไป</li></ul>
+<h3>ข้อจำกัดของผลลัพธ์</h3>
+<p>ตัวเลขและเนื้อหาที่เว็บนี้แสดงเป็นการประมาณเพื่อช่วยตัดสินใจ กรุณาตรวจสอบกับข้อมูลจริงของคุณก่อนนำไปใช้ ผู้จัดทำไม่รับผิดชอบต่อความเสียหายที่เกิดจากการนำผลลัพธ์ไปใช้โดยไม่ตรวจสอบ</p>
+<h3>การเปลี่ยนแปลงและการติดต่อ</h3>
+<p>หากในอนาคตมีการเพิ่มระบบนับผู้เข้าชม โฆษณา หรือการเก็บข้อมูลแบบอื่น นโยบายนี้จะได้รับการปรับปรุงก่อนเปิดใช้ ติดต่อผู้จัดทำได้ที่หน้า <a href="https://github.com/rookiekrit6-dotcom/FoodTool/issues">แจ้งปัญหาหรือเสนอแนะ</a></p></div></dialog>
 
 <script>
 "use strict";
@@ -242,7 +281,13 @@ const CAT = {
   sugar:['น้ำตาลทราย',1000,'ก.','1 กก.',27], palmSugar:['น้ำตาลปี๊บ',1000,'ก.','1 กก.',45], tamarind:['น้ำมะขามเปียก',1000,'มล.','1 ลิตร',60],
   pepper:['พริกไทยป่น',100,'ก.','ซอง 100 ก.',50], flour:['แป้งทอดกรอบ',1000,'ก.','1 กก.',45], coconut:['กะทิ',1000,'มล.','1 ลิตร',70],
   thaiTea:['ผงชาไทย',400,'ก.','ถุง 400 ก.',130], condensed:['นมข้นหวาน',380,'ก.','กระป๋อง 380 ก.',28], evaporated:['นมข้นจืด',385,'ก.','กระป๋อง 385 ก.',28],
-  ice:['น้ำแข็ง',20000,'ก.','ถุง 20 กก.',60], skewer:['ไม้เสียบ',100,'ไม้','ห่อ 100 ไม้',15]
+  ice:['น้ำแข็ง',20000,'ก.','ถุง 20 กก.',60], skewer:['ไม้เสียบ',100,'ไม้','ห่อ 100 ไม้',15],
+  wideNoodle:['เส้นใหญ่',1000,'ก.','1 กก.',30], kale:['คะน้า',1000,'ก.','1 กก.',40], mushroom:['เห็ดฟาง',1000,'ก.','1 กก.',90],
+  lemongrass:['ตะไคร้',1000,'ก.','1 กก.',40], galangal:['ข่า',1000,'ก.','1 กก.',60], kaffir:['ใบมะกรูด',100,'ก.','ถุง 100 ก.',15],
+  curryPaste:['พริกแกงเขียวหวาน',1000,'ก.','1 กก.',120], eggplant:['มะเขือเปราะ',1000,'ก.','1 กก.',40], sweetBasil:['ใบโหระพา',1000,'ก.','1 กก.',60],
+  roastedRice:['ข้าวคั่ว',500,'ก.','ถุง 500 ก.',40], chiliPowder:['พริกป่น',500,'ก.','ถุง 500 ก.',90], shallot:['หอมแดง',1000,'ก.','1 กก.',80],
+  mint:['ใบสะระแหน่',1000,'ก.','1 กก.',100], glassNoodle:['วุ้นเส้นแห้ง',500,'ก.','ห่อ 500 ก.',75], celery:['ขึ้นฉ่าย',1000,'ก.','1 กก.',90],
+  banana:['กล้วยน้ำว้า',12,'ลูก','1 หวี ราว 12 ลูก',35], sesame:['งาขาว',500,'ก.','ถุง 500 ก.',70], cocoa:['ผงโกโก้',500,'ก.','ถุง 500 ก.',150]
 };
 const DEFAULT_PRICES = Object.fromEntries(Object.entries(CAT).map(([k, c]) => [k, c[4]]));
 let prices = Object.assign({}, DEFAULT_PRICES, store.get('rc_prices', {}));
@@ -296,7 +341,39 @@ const RECIPES = [
  {id:'thaitea', name:'ชาไทยเย็น', cat:'เครื่องดื่ม', min:5, art:['glass','#e58a2e','#f3c79a','#ffffff','#ffffff'],
   ing:[['thaiTea',12],['condensed',30],['evaporated',30],['sugar',15],['ice',200]],
   steps:['ชงผงชาในน้ำร้อนจัด 3 ถึง 5 นาที แล้วกรอง','คนน้ำตาลและนมข้นหวานในน้ำชาขณะยังร้อน','เทใส่แก้วที่มีน้ำแข็งเต็ม','ราดนมข้นจืดด้านบน'],
-  tip:'ชงหัวเชื้อชาเข้มข้นเก็บในตู้เย็นได้ 1 วัน ช่วยให้ออกแก้วได้เร็วช่วงลูกค้าเยอะ'}
+  tip:'ชงหัวเชื้อชาเข้มข้นเก็บในตู้เย็นได้ 1 วัน ช่วยให้ออกแก้วได้เร็วช่วงลูกค้าเยอะ'},
+ {id:'padseeew', name:'ผัดซีอิ๊วหมู', cat:'เส้น', min:8, art:['plate','#fdfdf6','#8a5a2b','#2f7d32','#f6c443'],
+  ing:[['wideNoodle',150],['pork',60],['kale',50],['egg',1],['garlic',5],['oil',20],['darkSoy',10],['soy',10],['oyster',10],['sugar',5]],
+  steps:['คลุกเส้นใหญ่กับซีอิ๊วดำให้สีเสมอกัน','เจียวกระเทียม ใส่หมูผัดจนสุก แล้วตอกไข่ลงไปยีพอสุก','ใส่เส้นและก้านคะน้า ผัดไฟแรงให้เส้นมีกลิ่นกระทะ','ปรุงด้วยซีอิ๊วขาว ซอสหอยนางรม และน้ำตาล ใส่ใบคะน้าท้ายสุด'],
+  tip:'ใช้ไฟแรงและผัดทีละจาน เส้นจะหอมและไม่แฉะ ซึ่งเป็นจุดที่ลูกค้าใช้ตัดสินร้าน'},
+ {id:'tomyum', name:'ต้มยำกุ้งน้ำใสกับข้าวสวย', cat:'แกงและต้ม', min:15, art:['bowl','#f0c9a0','#f08a5d','#2f7d32','#f6efcf'],
+  ing:[['shrimp',80],['mushroom',50],['lemongrass',10],['galangal',5],['kaffir',2],['chili',5],['lime',1],['fishSauce',15],['rice',100]],
+  steps:['ต้มน้ำให้เดือด ใส่ข่า ตะไคร้ทุบ และใบมะกรูดฉีก','ใส่เห็ดฟาง ต้มต่อ 2 นาที','ใส่กุ้ง พอกุ้งเปลี่ยนสีให้ปิดไฟ','ปรุงด้วยน้ำปลา น้ำมะนาว และพริกบุบในชาม แล้วตักน้ำซุปใส่'],
+  tip:'ปรุงรสเปรี้ยวในชามหลังปิดไฟ น้ำมะนาวจะไม่ขม และปรับรสตามลูกค้าแต่ละคนได้'},
+ {id:'greencurry', name:'แกงเขียวหวานไก่ราดข้าว', cat:'แกงและต้ม', min:30, art:['bowl','#b9cf8a','#f0dcb2','#2f7d32','#7a9a3a'],
+  ing:[['chicken',80],['coconut',120],['curryPaste',25],['eggplant',40],['sweetBasil',5],['palmSugar',5],['fishSauce',10],['rice',100]],
+  steps:['เคี่ยวหัวกะทิส่วนหนึ่งจนแตกมัน ใส่พริกแกงผัดให้หอม','ใส่ไก่ผัดจนตึงตัว เติมกะทิที่เหลือ','ใส่มะเขือเปราะ ต้มจนสุก ปรุงด้วยน้ำปลาและน้ำตาลปี๊บ','ปิดไฟ ใส่ใบโหระพา ตักราดข้าวสวย'],
+  tip:'แกงหม้อใหญ่ขายได้ทั้งวันและใช้แรงงานน้อย เหมาะกับร้านข้าวแกงที่มีคนทำคนเดียว'},
+ {id:'larb', name:'ลาบหมูกับข้าวเหนียว', cat:'ยำและตำ', min:10, art:['plate','#fdfdf6','#b97a3c','#2f7d32','#f6efcf'],
+  ing:[['porkMince',120],['roastedRice',10],['chiliPowder',3],['shallot',15],['scallion',5],['mint',5],['lime',1],['fishSauce',15],['sticky',100]],
+  steps:['รวนหมูสับกับน้ำเล็กน้อยจนสุก ปิดไฟ','ปรุงด้วยน้ำปลา น้ำมะนาว และพริกป่น','ใส่ข้าวคั่ว หอมแดงซอย และต้นหอม คลุกให้เข้ากัน','โรยใบสะระแหน่ เสิร์ฟกับข้าวเหนียวและผักสด'],
+  tip:'คั่วข้าวเองครั้งละมาก ๆ เก็บในขวดปิดสนิท กลิ่นหอมกว่าแบบสำเร็จรูปและต้นทุนถูกกว่า'},
+ {id:'yumwoonsen', name:'ยำวุ้นเส้น', cat:'ยำและตำ', min:10, art:['plate','#fdfdf6','#eadfc8','#c8321f','#f08a5d'],
+  ing:[['glassNoodle',50],['porkMince',40],['shrimp',40],['tomato',30],['shallot',20],['celery',10],['chili',5],['lime',1.5],['fishSauce',15],['sugar',8],['peanut',5]],
+  steps:['แช่วุ้นเส้นให้นิ่ม แล้วลวกพอสุก สะเด็ดน้ำ','ลวกหมูสับและกุ้งจนสุก','ผสมน้ำยำจากน้ำมะนาว น้ำปลา น้ำตาล และพริกซอย','คลุกวุ้นเส้น เนื้อสัตว์ มะเขือเทศ หอมแดง และขึ้นฉ่าย กับน้ำยำ โรยถั่วลิสง'],
+  tip:'ผสมน้ำยำเป็นขวดไว้ล่วงหน้า รสจะเท่ากันทุกจาน และทำได้เร็วเมื่อมีออเดอร์ซ้อน'},
+ {id:'eggshrimp', name:'ข้าวไข่ข้นกุ้ง', cat:'ข้าวราด', min:6, art:['plate','#fdfdf6','#f6d35b','#f08a5d','#2f7d32'],
+  ing:[['rice',100],['egg',3],['shrimp',60],['evaporated',15],['oil',15],['soy',5],['scallion',3]],
+  steps:['ตีไข่กับนมข้นจืดและซีอิ๊วขาวพอเข้ากัน','ผัดกุ้งในน้ำมันจนสุก ตักขึ้นพักไว้','เทไข่ลงกระทะไฟอ่อน ใช้ตะหลิวดันจากขอบเข้ากลางช้า ๆ ให้เป็นก้อนนุ่ม','ปิดไฟขณะไข่ยังเยิ้ม ตักราดข้าว วางกุ้ง โรยต้นหอม'],
+  tip:'เมนูนี้ตั้งราคาได้สูงกว่าข้าวไข่เจียวมาก ทั้งที่ใช้เวลาทำใกล้เคียงกัน'},
+ {id:'friedbanana', name:'กล้วยทอด', cat:'ของทอดและปิ้ง', min:15, art:['plate','#fdfdf6','#d9992e','#c8792b','#f6efcf'],
+  ing:[['banana',2],['flour',30],['sesame',2],['sugar',5],['oil',30]],
+  steps:['ผสมแป้งทอดกรอบกับน้ำเย็น น้ำตาล และงาขาว','ปอกกล้วยห่าม ผ่าตามยาวเป็นชิ้น','ชุบแป้ง ทอดในน้ำมันร้อนปานกลางจนเหลืองกรอบ','สะเด็ดน้ำมันบนตะแกรง'],
+  tip:'ใช้กล้วยห่าม ไม่สุกจัด เนื้อจะไม่เละและอมน้ำมันน้อย ขายเป็นถุงตามน้ำหนักได้'},
+ {id:'cocoa', name:'โกโก้เย็น', cat:'เครื่องดื่ม', min:5, art:['glass','#6b4226','#c9a27a','#ffffff','#ffffff'],
+  ing:[['cocoa',15],['condensed',30],['evaporated',30],['sugar',10],['ice',200]],
+  steps:['ละลายผงโกโก้กับน้ำร้อนเล็กน้อยจนไม่เป็นก้อน','ใส่น้ำตาลและนมข้นหวาน คนให้เข้ากัน','เทใส่แก้วที่มีน้ำแข็งเต็ม','ราดนมข้นจืดด้านบน'],
+  tip:'ใช้อุปกรณ์ชุดเดียวกับชาไทย เพิ่มเมนูได้โดยแทบไม่มีต้นทุนอุปกรณ์เพิ่ม'}
 ];
 let custom = store.get('rc_custom', []);
 const allRecipes = () => RECIPES.concat(custom);
@@ -480,6 +557,12 @@ $('mSave').addEventListener('click', () => {
 });
 addEventListener('hashchange', route);
 route();
+/* ---------- guide + policy dialogs ---------- */
+document.addEventListener('click', e => {
+  const o = e.target.closest('[data-open]'); if (o){ const d = document.getElementById(o.dataset.open); if (d && d.showModal) d.showModal(); return; }
+  const c = e.target.closest('[data-close]'); if (c){ c.closest('dialog').close(); return; }
+  if (e.target.tagName === 'DIALOG') e.target.close();
+});
 </script>
 </body>
 </html>
