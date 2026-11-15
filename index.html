@@ -114,6 +114,15 @@ nav.tabs a{display:inline-flex;align-items:center;gap:7px}
 nav.tabs{scrollbar-width:none;-ms-overflow-style:none}
 nav.tabs::-webkit-scrollbar{display:none}
 @media(max-width:520px){nav.tabs a{padding:9px 10px;font-size:.92rem;gap:5px}nav.tabs{margin:0 -8px}}
+
+/* break-even */
+.be-bar{position:relative;height:18px;background:var(--line);border-radius:9px;margin:34px 0 34px}
+.be-bar i{display:block;height:100%;border-radius:9px;background:var(--leaf)}
+.be-bar b{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--ink)}
+.be-bar b span{position:absolute;left:50%;transform:translateX(-50%);font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--ink)}
+.be-bar b.up span{bottom:100%;padding-bottom:2px}
+.be-bar b.down span{top:100%;padding-top:2px}
+.be-bar b.r span{left:auto;right:0;transform:none}
 </style>
 </head>
 <body>
@@ -121,10 +130,11 @@ nav.tabs::-webkit-scrollbar{display:none}
   <h1><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h32a16 14 0 0 1-32 0z" fill="#fdfdf6"/><path d="M12 34h16" stroke="#fdfdf6" stroke-width="3" stroke-linecap="round"/><path d="M14 14c-2-3 2-4 0-7M20 14c-2-3 2-4 0-7M26 14c-2-3 2-4 0-7" fill="none" stroke="#f6c443" stroke-width="2.2" stroke-linecap="round"/></svg>สูตรเปิดร้าน</h1>
   <p class="sub">สูตรอาหารขายดี พร้อมต้นทุนต่อจานและราคาที่ควรตั้ง</p>
   <nav class="tabs" aria-label="เมนูหลัก">
-    <a href="#recipes" data-tab="recipes"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM8 7h7"/></svg>สูตรทั้งหมด</a>
-    <a href="#plan" data-tab="plan"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h3l2.5 11h9.5l2-8H7"/><circle cx="10" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg>รายการซื้อของ</a>
-    <a href="#prices" data-tab="prices"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>ราคาวัตถุดิบ</a>
-    <a href="#mine" data-tab="mine"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มสูตรของฉัน</a>
+    <a href="#recipes" data-tab="recipes"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM8 7h7"/></svg>สูตร</a>
+    <a href="#plan" data-tab="plan"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h3l2.5 11h9.5l2-8H7"/><circle cx="10" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg>ซื้อของ</a>
+    <a href="#prices" data-tab="prices"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>ราคาของ</a>
+    <a href="#breakeven" data-tab="breakeven"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5M4 20h16"/><path d="M4 16l6-5 4 3 6-7"/></svg>จุดคุ้มทุน</a>
+    <a href="#mine" data-tab="mine"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มสูตร</a>
   </nav>
 </div></header>
 <main><div class="wrap">
@@ -156,6 +166,36 @@ nav.tabs::-webkit-scrollbar{display:none}
     <div class="row" style="justify-content:space-between"><h2 style="margin:0">ราคาวัตถุดิบ (บาท)</h2><button class="btn small alt" id="resetPrices" type="button">คืนค่าราคาตั้งต้น</button></div>
     <p class="note" style="margin:6px 0 14px">ราคาตั้งต้นเป็นค่าประมาณ กรุณาแก้เป็นราคาที่คุณซื้อจริง ต้นทุนทุกสูตรจะคำนวณใหม่ทันที และบันทึกไว้ในเครื่องนี้</p>
     <div class="price-grid" id="priceGrid"></div>
+  </div>
+</section>
+
+<section class="view" id="v-breakeven">
+  <div class="detail">
+    <div class="card">
+      <h2>ค่าใช้จ่ายของร้านต่อเดือน (บาท)</h2>
+      <div class="fields">
+        <label class="f">ค่าเช่าที่<input type="number" id="beRent" min="0" step="100" value="5000" inputmode="decimal"></label>
+        <label class="f">ค่าจ้างพนักงาน<input type="number" id="beStaff" min="0" step="100" value="0" inputmode="decimal"></label>
+        <label class="f">ค่าน้ำ ค่าไฟ ค่าแก๊ส<input type="number" id="beUtil" min="0" step="100" value="2000" inputmode="decimal"></label>
+        <label class="f">ค่าใช้จ่ายอื่น<input type="number" id="beOther" min="0" step="100" value="1000" inputmode="decimal"></label>
+        <label class="f">รายได้ที่เจ้าของอยากได้<input type="number" id="beOwner" min="0" step="500" value="15000" inputmode="decimal"></label>
+        <label class="f">เปิดร้านเดือนละกี่วัน<input type="number" id="beDays" min="1" max="31" step="1" value="26" inputmode="numeric"></label>
+      </div>
+      <h3>ต่อ 1 จาน</h3>
+      <div class="fields">
+        <label class="f">ดึงตัวเลขจากสูตร<select id="beRecipe" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;width:100%"></select></label>
+        <label class="f">ราคาขายเฉลี่ย<input type="number" id="bePrice" min="0" step="1" value="50" inputmode="decimal"></label>
+        <label class="f">ต้นทุนเฉลี่ย (วัตถุดิบ กล่อง แก๊ส)<input type="number" id="beCost" min="0" step="0.5" value="25" inputmode="decimal"></label>
+      </div>
+      <h3>ยอดขายที่คาดไว้</h3>
+      <div class="fields"><label class="f">ขายได้วันละกี่จาน<input type="number" id="bePlates" min="0" step="1" value="60" inputmode="numeric"></label></div>
+    </div>
+    <div class="card">
+      <h2>ต้องขายวันละกี่จาน</h2>
+      <div class="kv" id="beOut" aria-live="polite"></div>
+      <div class="be-bar" id="beBar"></div>
+      <p class="note">จุดคุ้มทุนคือจำนวนจานที่ทำให้กำไรจากการขายพอดีกับค่าใช้จ่ายประจำของร้าน ขายได้น้อยกว่านี้คือขาดทุน ตัวเลขเป็นการประมาณเพื่อช่วยวางแผน ยังไม่รวมของเสียและวันที่ขายไม่ดี</p>
+    </div>
   </div>
 </section>
 
@@ -289,18 +329,19 @@ function art(r){
 }
 
 /* ---------- views ---------- */
-const TABS = ['recipes','plan','prices','mine'];
+const TABS = ['recipes','plan','prices','breakeven','mine'];
 let filter = 'ทั้งหมด';
 function route(){
   const h = location.hash.slice(1);
   const rec = h.startsWith('r-') ? findRecipe(h.slice(2)) : null;
   const tab = rec ? 'detail' : TABS.includes(h) ? h : 'recipes';
-  ['recipes','detail','plan','prices','mine'].forEach(n => $('v-' + n).classList.toggle('on', n === tab));
+  ['recipes','detail','plan','prices','breakeven','mine'].forEach(n => $('v-' + n).classList.toggle('on', n === tab));
   document.querySelectorAll('nav.tabs a').forEach(a => a.dataset.tab === (rec ? 'recipes' : tab) ? a.setAttribute('aria-current','page') : a.removeAttribute('aria-current'));
   if (tab === 'recipes') renderCards();
   if (tab === 'detail') renderDetail(rec);
   if (tab === 'plan') renderPlan();
   if (tab === 'prices') renderPrices();
+  if (tab === 'breakeven') renderBE();
   scrollTo(0, 0);
 }
 function renderCards(){
@@ -389,7 +430,34 @@ function renderPrices(){
   $('priceGrid').innerHTML = Object.entries(CAT).map(([k, c]) => `<label><span>${esc(c[0])}<small>${esc(c[3])}</small></span><input type="number" min="0" step="1" value="${prices[k]}" data-price="${k}" inputmode="decimal"></label>`).join('');
 }
 
+const BE_IDS = ['beRent','beStaff','beUtil','beOther','beOwner','beDays','bePrice','beCost','bePlates'];
+function renderBE(){
+  $('beRecipe').innerHTML = '<option value="">กรอกเอง</option>' + allRecipes().map(r => `<option value="${r.id}">${esc(r.name)}</option>`).join('');
+  const saved = store.get('rc_be', null);
+  if (saved) BE_IDS.forEach(id => { if (saved[id] != null) $(id).value = saved[id]; });
+  calcBE();
+}
+function calcBE(){
+  const v = id => { const n = parseFloat($(id).value); return isFinite(n) && n >= 0 ? n : 0; };
+  const fixed = v('beRent') + v('beStaff') + v('beUtil') + v('beOther'), owner = v('beOwner'), days = Math.max(1, v('beDays'));
+  const margin = v('bePrice') - v('beCost'), plates = v('bePlates');
+  store.set('rc_be', Object.fromEntries(BE_IDS.map(id => [id, $(id).value])));
+  if (margin <= 0){
+    $('beOut').innerHTML = '<div class="wide"><span>ยังคำนวณไม่ได้</span><strong style="color:var(--bad)">ราคาขายต้องสูงกว่าต้นทุนต่อจาน</strong></div>'; $('beBar').innerHTML = ''; return; }
+  const be = Math.ceil(fixed / margin / days), want = Math.ceil((fixed + owner) / margin / days), left = margin * plates * days - fixed;
+  const state = plates < be ? ['bad','ต่ำกว่าจุดคุ้มทุน'] : plates < want ? ['good','คุ้มทุนแล้ว แต่ยังไม่ถึงรายได้ที่อยากได้'] : ['good','ถึงเป้ารายได้แล้ว'];
+  $('beOut').innerHTML = `<div><span>กำไรต่อจาน</span><strong>${b2(margin)} ฿</strong></div><div><span>ค่าใช้จ่ายประจำต่อเดือน</span><strong>${b0(fixed)} ฿</strong></div>
+    <div><span>จุดคุ้มทุน</span><strong>${b0(be)} จาน/วัน</strong></div><div><span>ให้เจ้าของได้ ${b0(owner)} ฿</span><strong>${b0(want)} จาน/วัน</strong></div>
+    <div class="wide"><span>ถ้าขายได้วันละ ${b0(plates)} จาน เจ้าของเหลือเดือนละ</span><strong style="color:${left < 0 ? 'var(--bad)' : 'var(--ink)'}">${b0(left)} ฿</strong> <span class="pill ${state[0]}" style="display:inline-block">${state[1]}</span></div>`;
+  const scale = Math.max(want, plates, 1) * 1.08, pos = n => Math.min(100, n / scale * 100);
+  $('beBar').innerHTML = `<i style="width:${pos(plates)}%"></i><b class="up" style="left:${pos(be)}%"><span>คุ้มทุน ${b0(be)}</span></b><b class="down${pos(want) > 80 ? ' r' : ''}" style="left:${pos(want)}%"><span>ถึงเป้า ${b0(want)}</span></b>`;
+}
+
 /* ---------- events ---------- */
+$('v-breakeven').addEventListener('input', e => {
+  if (e.target.id === 'beRecipe' && e.target.value){ const r = findRecipe(e.target.value), c = plateCost(r) + 5; $('beCost').value = c.toFixed(2); $('bePrice').value = roundUp5(c / 0.45); }
+  calcBE();
+});
 $('chips').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ filter = b.dataset.cat; renderCards(); } });
 $('planItems').addEventListener('change', e => { const id = e.target.dataset.plan; if (!id) return; const plan = store.get('rc_plan', {}); plan[id] = Math.max(1, parseInt(e.target.value) || 1); store.set('rc_plan', plan); renderPlan(); });
 $('planItems').addEventListener('click', e => { const id = e.target.dataset.rm; if (!id) return; const plan = store.get('rc_plan', {}); delete plan[id]; store.set('rc_plan', plan); renderPlan(); });
