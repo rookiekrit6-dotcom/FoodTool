@@ -219,6 +219,17 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
   <div class="chips" id="chips" role="group" aria-label="หมวดอาหาร"></div>
   <div class="cards" id="cards"></div>
   <div class="card" style="margin-top:18px;max-width:720px">
+    <h2>ชุดเมนูเริ่มต้นตามแบบร้าน</h2>
+    <p class="note" style="margin:0 0 12px">กดเลือกแบบร้าน ระบบจะใส่เมนูชุดนั้นลงในรายการซื้อของ เมนูละ 20 จาน แล้วพาไปดูของที่ต้องซื้อ สรุปแผนร้าน และป้ายเมนู ปรับจำนวนและราคาได้ภายหลัง</p>
+    <div class="row" id="sets">
+      <button class="btn alt" type="button" data-kit="krapao,krapaokai,friedrice,garlicpork,omelet,kalepork">ร้านอาหารตามสั่ง</button>
+      <button class="btn alt" type="button" data-kit="noodle,tomyumnoodle,kaolao,friedmeatball">ร้านก๋วยเตี๋ยว</button>
+      <button class="btn alt" type="button" data-kit="somtam,tumpoo,cornsalad,larb,grilledchicken">ร้านส้มตำไก่ย่าง</button>
+      <button class="btn alt" type="button" data-kit="greencurry,panang,tomkha,tofusoup,padprikgaeng">ร้านข้าวแกง</button>
+      <button class="btn alt" type="button" data-kit="thaitea,cocoa,greenteamilk,pinkmilk,oldcoffee,limetea,limesoda,toast">ร้านน้ำและขนมปังปิ้ง</button>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px;max-width:720px">
     <h2>เช็กลิสต์ก่อนเปิดร้านวันแรก</h2>
     <ul class="chk">
       <li><label><input type="checkbox"><span>คำนวณต้นทุนและตั้งราคาครบทุกเมนู โดยทุกเมนูยังเหลือกำไรหลังรวมค่ากล่องและค่าแก๊ส</span></label></li>
@@ -841,6 +852,7 @@ $('v-breakeven').addEventListener('input', e => {
   if (e.target.id === 'beRecipe' && e.target.value){ const r = findRecipe(e.target.value), c = plateCost(r) + 5; $('beCost').value = c.toFixed(2); $('bePrice').value = roundUp5(c / 0.45); }
   calcBE();
 });
+$('sets').addEventListener('click', e => { const b = e.target.closest('[data-kit]'); if (!b) return; const plan = store.get('rc_plan', {}); b.dataset.kit.split(',').forEach(id => { if (findRecipe(id) && !plan[id]) plan[id] = 20; }); store.set('rc_plan', plan); location.hash = '#plan'; });
 $('q').addEventListener('input', renderCards);
 $('sort').addEventListener('change', renderCards);
 $('chips').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ filter = b.dataset.cat; renderCards(); } });
