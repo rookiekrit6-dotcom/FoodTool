@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>สูตรเปิดร้าน</title>
+<meta name="description" content="สูตรอาหารสำหรับคนเปิดร้าน พร้อมคำนวณต้นทุนต่อจาน ราคาขายที่ควรตั้ง กำไรต่อวัน และรายการซื้อของ ใช้ฟรี">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* layout: top nav with four views; recipe grid of cards; detail = ingredients table beside a costing panel */
+:root{
+  --ink:#1d2a1f; --ink-soft:#5b6b5d; --paper:#f4f6ef; --card:#ffffff; --line:#d6dccb;
+  --leaf:#2e6b3a; --leaf-ink:#ffffff; --chili:#c8321f; --good:#1f7a43; --good-bg:#e0f2e4; --bad:#b3261e; --bad-bg:#fbe1df;
+  --f-head:"Kanit","Sarabun",sans-serif; --f-body:"Sarabun","Noto Sans Thai",Tahoma,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+header.top{background:var(--leaf);color:var(--leaf-ink);padding:16px 16px 0}
+.wrap{max-width:1080px;margin:0 auto}
+h1{margin:0;font-family:var(--f-head);font-size:1.6rem;font-weight:600}
+.sub{margin:0 0 12px;opacity:.9;font-size:.95rem}
+nav.tabs{display:flex;gap:4px;overflow-x:auto}
+nav.tabs a{flex:none;padding:9px 14px;border-radius:10px 10px 0 0;color:#fff;text-decoration:none;font-weight:600;opacity:.82}
+nav.tabs a[aria-current="page"]{background:var(--paper);color:var(--leaf);opacity:1}
+main{padding:18px 16px 56px}
+section.view{display:none} section.view.on{display:block}
+h2{font-family:var(--f-head);font-weight:600;font-size:1.25rem;margin:0 0 10px}
+h3{font-size:1rem;margin:16px 0 8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.rc{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column}
+.rc .pic{aspect-ratio:4/3;background:#e9eee0;display:grid;place-items:center}
+.rc .pic img,.rc .pic svg{width:100%;height:100%;object-fit:cover;display:block}
+.rc .body{padding:12px 14px 14px;display:grid;gap:4px}
+.rc b{font-family:var(--f-head);font-weight:500;font-size:1.05rem;line-height:1.3}
+.rc small{color:var(--ink-soft)}
+.cost{font-weight:700;color:var(--chili);font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chips button{font:inherit;padding:6px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.detail{display:grid;gap:16px}
+@media(min-width:880px){.detail{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);align-items:start}}
+.hero{display:grid;gap:14px;grid-template-columns:120px 1fr;align-items:center;margin-bottom:14px}
+.hero .pic{width:120px;aspect-ratio:1;border-radius:14px;overflow:hidden;background:#e9eee0}
+.hero .pic img,.hero .pic svg{width:100%;height:100%;object-fit:cover;display:block}
+.back{display:inline-block;margin-bottom:10px;color:var(--leaf);font-weight:600;text-decoration:none}
+input,select,textarea,button{font:inherit;color:inherit}
+input[type=number],input[type=text],textarea{padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);width:100%}
+input[type=number]{font-variant-numeric:tabular-nums}
+textarea{min-height:120px;resize:vertical}
+:is(input,select,textarea,button,a):focus-visible{outline:3px solid var(--chili);outline-offset:2px}
+label.f{display:grid;gap:4px;font-size:.9rem;color:var(--ink-soft)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.btn{border:0;border-radius:10px;padding:10px 16px;background:var(--leaf);color:#fff;font-weight:700;cursor:pointer}
+.btn.alt{background:#fff;color:var(--leaf);border:1.5px solid var(--leaf)}
+.btn.small{padding:6px 12px;font-size:.88rem}
+.btn.danger{background:#fff;color:var(--bad);border:1.5px solid var(--bad)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tbl-wrap{overflow-x:auto}
+table.t{width:100%;border-collapse:collapse;font-size:.95rem}
+table.t th{text-align:left;font-weight:600;color:var(--ink-soft);font-size:.85rem;padding:6px 8px 6px 0;border-bottom:1.5px solid var(--line)}
+table.t td{padding:7px 8px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+table.t :is(td,th).r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;padding-right:0}
+table.t tr.sum td{font-weight:700;border-bottom:0}
+ol.steps{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.tip{background:#fff7e0;border-left:4px solid #e2a100;padding:10px 12px;border-radius:0 10px 10px 0;margin-top:12px;font-size:.95rem}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.kv div{background:var(--paper);border-radius:10px;padding:10px 12px}
+.kv span{display:block;font-size:.8rem;color:var(--ink-soft)}
+.kv strong{font-size:1.25rem;font-variant-numeric:tabular-nums}
+.kv .wide{grid-column:1/-1}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-weight:700;font-size:.85rem}
+.pill.good{background:var(--good-bg);color:var(--good)} .pill.bad{background:var(--bad-bg);color:var(--bad)}
+.note{font-size:.86rem;color:var(--ink-soft);margin:10px 0 0}
+.plan-item{display:grid;grid-template-columns:1fr 96px auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 16px}
+.price-grid label{display:grid;grid-template-columns:1fr 92px;gap:8px;align-items:center;font-size:.92rem}
+.price-grid small{color:var(--ink-soft);display:block}
+.empty{color:var(--ink-soft);padding:8px 0}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <h1>สูตรเปิดร้าน</h1>
+  <p class="sub">สูตรอาหารขายดี พร้อมต้นทุนต่อจานและราคาที่ควรตั้ง</p>
+  <nav class="tabs" aria-label="เมนูหลัก">
+    <a href="#recipes" data-tab="recipes">สูตรทั้งหมด</a>
+    <a href="#plan" data-tab="plan">รายการซื้อของ</a>
+    <a href="#prices" data-tab="prices">ราคาวัตถุดิบ</a>
+    <a href="#mine" data-tab="mine">เพิ่มสูตรของฉัน</a>
+  </nav>
+</div></header>
+<main><div class="wrap">
+
+<section class="view" id="v-recipes">
+  <div class="chips" id="chips" role="group" aria-label="หมวดอาหาร"></div>
+  <div class="cards" id="cards"></div>
+  <p class="note">ต้นทุนคำนวณจากราคาวัตถุดิบโดยประมาณ ราคาจริงต่างกันตามพื้นที่และฤดูกาล แก้เป็นราคาตลาดใกล้คุณได้ที่แท็บราคาวัตถุดิบ รูปประกอบเป็นภาพวาด คุณใส่รูปถ่ายอาหารของร้านตัวเองได้ในหน้าสูตร</p>
+</section>
+
+<section class="view" id="v-detail"></section>
+
+<section class="view" id="v-plan">
+  <div class="detail">
+    <div class="card">
+      <h2>เมนูที่จะทำขาย</h2>
+      <div id="planItems"></div>
+      <p class="note">เพิ่มเมนูได้จากปุ่ม "เพิ่มในรายการซื้อของ" ในหน้าสูตรแต่ละสูตร</p>
+    </div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><h2 style="margin:0">ของที่ต้องซื้อ</h2><button class="btn small alt" id="copyPlan" type="button">คัดลอกรายการ</button></div>
+      <div class="tbl-wrap"><table class="t" id="planTable" style="margin-top:10px"></table></div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-prices">
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">ราคาวัตถุดิบ (บาท)</h2><button class="btn small alt" id="resetPrices" type="button">คืนค่าราคาตั้งต้น</button></div>
+    <p class="note" style="margin:6px 0 14px">ราคาตั้งต้นเป็นค่าประมาณ กรุณาแก้เป็นราคาที่คุณซื้อจริง ต้นทุนทุกสูตรจะคำนวณใหม่ทันที และบันทึกไว้ในเครื่องนี้</p>
+    <div class="price-grid" id="priceGrid"></div>
+  </div>
+</section>
+
+<section class="view" id="v-mine">
+  <div class="card" style="max-width:640px">
+    <h2>เพิ่มสูตรของฉัน</h2>
+    <div class="fields">
+      <label class="f">ชื่อเมนู<input type="text" id="mName" placeholder="เช่น ข้าวไข่ข้นกุ้ง"></label>
+      <label class="f">สูตรนี้ทำได้กี่จาน<input type="number" id="mServ" min="1" value="1" inputmode="numeric"></label>
+    </div>
+    <label class="f" style="margin-top:12px">วัตถุดิบ บรรทัดละ 1 อย่าง ในรูปแบบ: ชื่อ, ปริมาณ, หน่วย, ต้นทุนของปริมาณนั้น (บาท)
+      <textarea id="mIng" placeholder="กุ้งสด, 80, ก., 20&#10;ไข่ไก่, 2, ฟอง, 8&#10;ข้าวสวย, 250, ก., 5"></textarea></label>
+    <label class="f" style="margin-top:12px">วิธีทำ บรรทัดละ 1 ขั้นตอน (ไม่ใส่ก็ได้)
+      <textarea id="mSteps"></textarea></label>
+    <div class="row" style="margin-top:14px"><button class="btn" id="mSave" type="button">บันทึกสูตร</button><span id="mMsg" class="note" style="margin:0" role="status"></span></div>
+    <p class="note">สูตรของคุณเก็บอยู่ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ถ้าล้างข้อมูลเบราว์เซอร์หรือเปลี่ยนเครื่อง สูตรจะหายไป</p>
+  </div>
+</section>
+
+</div></main>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const b2 = n => n.toLocaleString('th-TH', {minimumFractionDigits:2, maximumFractionDigits:2});
+const b0 = n => Math.round(n).toLocaleString('th-TH');
+const store = { get(k, d){ try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch(e){ return d; } },
+                set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } } };
+
+/* ---------- ingredient catalog: [name, pack size, unit, pack label, default price] ---------- */
+const CAT = {
+  rice:['ข้าวสารหอมมะลิ',1000,'ก.','1 กก.',35], sticky:['ข้าวเหนียว',1000,'ก.','1 กก.',40],
+  porkMince:['หมูสับ',1000,'ก.','1 กก.',160], pork:['เนื้อหมู',1000,'ก.','1 กก.',170], porkBone:['กระดูกหมู',1000,'ก.','1 กก.',70],
+  chicken:['ไก่สะโพกหรือน่อง',1000,'ก.','1 กก.',90], shrimp:['กุ้งสด',1000,'ก.','1 กก.',250], egg:['ไข่ไก่',30,'ฟอง','1 แผง 30 ฟอง',120],
+  meatball:['ลูกชิ้นหมู',1000,'ก.','1 กก.',140], tofu:['เต้าหู้เหลือง',1000,'ก.','1 กก.',60], driedShrimp:['กุ้งแห้ง',1000,'ก.','1 กก.',400],
+  basil:['ใบกะเพรา',1000,'ก.','1 กก.',60], chili:['พริกขี้หนู',1000,'ก.','1 กก.',100], garlic:['กระเทียม',1000,'ก.','1 กก.',90],
+  ginger:['ขิง',1000,'ก.','1 กก.',70], scallion:['ต้นหอม',1000,'ก.','1 กก.',80], cucumber:['แตงกวา',1000,'ก.','1 กก.',30],
+  lime:['มะนาว',10,'ลูก','10 ลูก',40], papaya:['มะละกอดิบ',1000,'ก.','1 กก.',25], tomato:['มะเขือเทศ',1000,'ก.','1 กก.',40],
+  longBean:['ถั่วฝักยาว',1000,'ก.','1 กก.',50], sprout:['ถั่วงอก',1000,'ก.','1 กก.',25], chive:['กุยช่าย',1000,'ก.','1 กก.',60],
+  peanut:['ถั่วลิสงคั่ว',1000,'ก.','1 กก.',90], chanNoodle:['เส้นจันท์',1000,'ก.','1 กก.',50], riceNoodle:['เส้นเล็ก',1000,'ก.','1 กก.',30],
+  oil:['น้ำมันพืช',1000,'มล.','1 ลิตร',50], oyster:['ซอสหอยนางรม',600,'มล.','ขวด 600 มล.',45], soy:['ซีอิ๊วขาว',700,'มล.','ขวด 700 มล.',45],
+  darkSoy:['ซีอิ๊วดำ',300,'มล.','ขวด 300 มล.',30], fishSauce:['น้ำปลา',700,'มล.','ขวด 700 มล.',30], beanPaste:['เต้าเจี้ยว',500,'ก.','ขวด 500 ก.',35],
+  sugar:['น้ำตาลทราย',1000,'ก.','1 กก.',27], palmSugar:['น้ำตาลปี๊บ',1000,'ก.','1 กก.',45], tamarind:['น้ำมะขามเปียก',1000,'มล.','1 ลิตร',60],
+  pepper:['พริกไทยป่น',100,'ก.','ซอง 100 ก.',50], flour:['แป้งทอดกรอบ',1000,'ก.','1 กก.',45], coconut:['กะทิ',1000,'มล.','1 ลิตร',70],
+  thaiTea:['ผงชาไทย',400,'ก.','ถุง 400 ก.',130], condensed:['นมข้นหวาน',380,'ก.','กระป๋อง 380 ก.',28], evaporated:['นมข้นจืด',385,'ก.','กระป๋อง 385 ก.',28],
+  ice:['น้ำแข็ง',20000,'ก.','ถุง 20 กก.',60], skewer:['ไม้เสียบ',100,'ไม้','ห่อ 100 ไม้',15]
+};
+const DEFAULT_PRICES = Object.fromEntries(Object.entries(CAT).map(([k, c]) => [k, c[4]]));
+let prices = Object.assign({}, DEFAULT_PRICES, store.get('rc_prices', {}));
+
+/* ---------- recipes: quantities are for 1 plate; ing = [catalog key, qty] ---------- */
+const RECIPES = [
+ {id:'krapao', name:'ผัดกะเพราหมูสับไข่ดาว', cat:'ข้าวราด', min:8, art:['plate','#fdfdf6','#7a4a2a','#2f7d32','#f6c443'],
+  ing:[['rice',100],['porkMince',70],['basil',15],['chili',5],['garlic',8],['egg',1],['oil',30],['oyster',10],['soy',5],['fishSauce',5],['sugar',3]],
+  steps:['โขลกพริกกับกระเทียมพอหยาบ','ตั้งกระทะไฟแรง ใส่น้ำมัน ผัดพริกกระเทียมจนหอม','ใส่หมูสับ ผัดจนสุกและเริ่มแห้ง ปรุงด้วยซอสหอยนางรม ซีอิ๊วขาว น้ำปลา และน้ำตาล','ปิดไฟแล้วใส่ใบกะเพรา คลุกให้เข้ากัน','ทอดไข่ดาวในน้ำมันร้อนจัดให้ขอบกรอบ ตักราดข้าวสวย'],
+  tip:'ผัดหมูสับเตรียมไว้ครั้งละมาก ๆ แล้วอุ่นพร้อมใส่กะเพราสดตอนลูกค้าสั่ง จะออกจานได้ภายใน 2 นาที'},
+ {id:'friedrice', name:'ข้าวผัดหมู', cat:'ข้าวราด', min:7, art:['plate','#f1d79a','#c98b4a','#3d8f43','#f6c443'],
+  ing:[['rice',100],['pork',60],['egg',1],['scallion',10],['garlic',5],['oil',20],['soy',10],['sugar',3],['cucumber',30],['lime',0.25]],
+  steps:['หุงข้าวให้แข็งกว่าปกติเล็กน้อยแล้วผึ่งให้เย็น','เจียวกระเทียมในน้ำมัน ใส่หมูผัดจนสุก','ตอกไข่ลงไป ยีให้แตกพอสุก แล้วใส่ข้าว','ปรุงด้วยซีอิ๊วขาวและน้ำตาล ผัดไฟแรงจนข้าวร่วน','โรยต้นหอม เสิร์ฟกับแตงกวาและมะนาว'],
+  tip:'ข้าวค้างคืนในตู้เย็นผัดได้ร่วนกว่าข้าวหุงใหม่ และลดของเหลือทิ้งได้'},
+ {id:'chickenrice', name:'ข้าวมันไก่', cat:'ข้าวราด', min:60, art:['plate','#f6efcf','#f0dcb2','#3d8f43','#8a5a2b'],
+  ing:[['rice',110],['chicken',120],['garlic',8],['ginger',8],['oil',10],['beanPaste',15],['chili',3],['cucumber',30],['darkSoy',5]],
+  steps:['ต้มไก่ในน้ำเดือดเบา ๆ กับขิงจนสุก แล้วแช่น้ำเย็นให้หนังตึง เก็บน้ำซุปไว้','เจียวกระเทียมและขิงในน้ำมัน ใส่ข้าวสารผัดให้เคลือบน้ำมัน','หุงข้าวด้วยน้ำซุปไก่แทนน้ำเปล่า','ทำน้ำจิ้มจากเต้าเจี้ยว ขิงสับ พริก กระเทียม และซีอิ๊วดำ','สับไก่วางบนข้าว เสิร์ฟกับแตงกวาและน้ำซุป'],
+  tip:'ขายน้ำซุปเป็นของแถมได้โดยไม่มีต้นทุนเพิ่ม เพราะใช้น้ำต้มไก่ที่มีอยู่แล้ว'},
+ {id:'garlicpork', name:'ข้าวหมูกระเทียม', cat:'ข้าวราด', min:8, art:['plate','#fdfdf6','#b97a3c','#3d8f43','#e9c46a'],
+  ing:[['rice',100],['pork',80],['garlic',20],['pepper',1],['oyster',10],['soy',5],['sugar',3],['oil',20],['cucumber',30]],
+  steps:['หั่นหมูชิ้นบาง หมักกับซอสหอยนางรม ซีอิ๊วขาว น้ำตาล และพริกไทย อย่างน้อย 15 นาที','เจียวกระเทียมสับจนเหลือง ตักขึ้นพักไว้ครึ่งหนึ่ง','ใส่หมูลงผัดไฟแรงจนสุกและขอบเริ่มเกรียม','ตักราดข้าว โรยกระเทียมเจียวที่พักไว้ เสิร์ฟกับแตงกวา'],
+  tip:'หมักหมูค้างคืนไว้เป็นถุงตามจำนวนจาน ตอนขายแค่เทลงกระทะ'},
+ {id:'omelet', name:'ข้าวไข่เจียวหมูสับ', cat:'ข้าวราด', min:5, art:['plate','#fdfdf6','#f0b83a','#d98e1f','#c8321f'],
+  ing:[['rice',100],['egg',2],['porkMince',40],['fishSauce',5],['oil',40]],
+  steps:['ตีไข่กับหมูสับและน้ำปลาให้ขึ้นฟอง','ตั้งน้ำมันให้ร้อนจัดจนมีควันบาง ๆ','เทไข่ลงจากที่สูงเพื่อให้ฟู ทอดจนเหลืองทั้งสองด้าน','สะเด็ดน้ำมัน วางบนข้าวสวย'],
+  tip:'เป็นเมนูต้นทุนต่ำที่สุดในร้าน เหมาะตั้งเป็นเมนูราคาเริ่มต้นเพื่อดึงลูกค้า'},
+ {id:'porridge', name:'ข้าวต้มหมูสับ', cat:'ข้าวราด', min:25, art:['bowl','#f4eedc','#fdfdf6','#3d8f43','#c98b4a'],
+  ing:[['rice',50],['porkMince',60],['ginger',5],['scallion',5],['garlic',5],['soy',10],['oil',5],['pepper',0.5]],
+  steps:['ต้มข้าวกับน้ำมาก ๆ จนเม็ดข้าวบาน','ปั้นหมูสับเป็นก้อนเล็ก ใส่ลงต้มจนสุก ปรุงด้วยซีอิ๊วขาว','เจียวกระเทียมเตรียมไว้','ตักใส่ชาม โรยขิงซอย ต้นหอม กระเทียมเจียว และพริกไทย'],
+  tip:'ขายดีช่วงเช้าและดึก เพิ่มไข่ลวกเป็นตัวเลือกบวกราคาได้'},
+ {id:'somtam', name:'ส้มตำไทย', cat:'ยำและตำ', min:5, art:['plate','#fdfdf6','#f3d98b','#c8321f','#3d8f43'],
+  ing:[['papaya',150],['tomato',30],['longBean',20],['peanut',10],['driedShrimp',5],['chili',5],['garlic',5],['lime',1],['palmSugar',15],['fishSauce',15]],
+  steps:['โขลกกระเทียมกับพริกพอแตก','ใส่ถั่วฝักยาวและมะเขือเทศ บุบพอช้ำ','ปรุงด้วยน้ำตาลปี๊บ น้ำปลา และน้ำมะนาว คนให้น้ำตาลละลาย','ใส่มะละกอสับ กุ้งแห้ง และถั่วลิสง คลุกเบา ๆ ให้เข้ากัน'],
+  tip:'ละลายน้ำตาลปี๊บกับน้ำปลาเป็นน้ำปรุงสำเร็จไว้ล่วงหน้า รสจะคงที่ทุกครก'},
+ {id:'padthai', name:'ผัดไทยกุ้งสด', cat:'เส้น', min:10, art:['plate','#fdfdf6','#e0a35a','#f08a5d','#3d8f43'],
+  ing:[['chanNoodle',80],['shrimp',50],['tofu',30],['egg',1],['sprout',50],['chive',15],['peanut',10],['tamarind',20],['palmSugar',20],['fishSauce',15],['oil',20],['lime',0.25]],
+  steps:['เคี่ยวน้ำมะขามเปียก น้ำตาลปี๊บ และน้ำปลา เป็นซอสผัดไทย','แช่เส้นจันท์ในน้ำจนนิ่ม','ผัดกุ้งและเต้าหู้ในน้ำมัน ใส่เส้นและซอส ผัดจนเส้นดูดซอส','ดันเส้นไว้ข้างกระทะ ตอกไข่ ยีแล้วคลุกรวมกัน','ใส่ถั่วงอกและกุยช่าย ผัดเร็ว ๆ โรยถั่วลิสง เสิร์ฟกับมะนาว'],
+  tip:'กุ้งคือต้นทุนหลักของจานนี้ ทำตัวเลือกแบบไม่ใส่กุ้งในราคาถูกลงเพื่อเพิ่มกลุ่มลูกค้าได้'},
+ {id:'noodle', name:'ก๋วยเตี๋ยวหมูน้ำใส', cat:'เส้น', min:90, art:['bowl','#e8d9a8','#fdfdf6','#3d8f43','#b97a3c'],
+  ing:[['riceNoodle',80],['pork',60],['meatball',40],['porkBone',80],['sprout',30],['scallion',5],['garlic',5],['oil',5],['soy',10],['sugar',3]],
+  steps:['ต้มกระดูกหมูไฟอ่อนอย่างน้อย 1 ชั่วโมง คอยช้อนฟอง ปรุงด้วยซีอิ๊วขาวและน้ำตาล','ลวกหมูและลูกชิ้นในน้ำซุปจนสุก','ลวกเส้นและถั่วงอกในน้ำเดือด ใส่ชาม','ตักน้ำซุปใส่ วางหมูและลูกชิ้น โรยต้นหอมและกระเทียมเจียว'],
+  tip:'น้ำซุปหม้อเดียวใช้ขายได้ทั้งวัน ต้นทุนกระดูกต่อชามจะลดลงเมื่อขายได้มากขึ้น'},
+ {id:'friedchicken', name:'ไก่ทอดกับข้าวเหนียว', cat:'ของทอดและปิ้ง', min:40, art:['plate','#fdfdf6','#c8792b','#a85d1b','#f6efcf'],
+  ing:[['chicken',200],['flour',40],['garlic',5],['fishSauce',5],['pepper',0.5],['oil',50],['sticky',80]],
+  steps:['หมักไก่กับกระเทียมสับ น้ำปลา และพริกไทย อย่างน้อย 30 นาที','ผสมแป้งทอดกรอบกับน้ำเย็น คลุกไก่ให้ทั่ว','ทอดในน้ำมันไฟกลางจนสุกถึงใน แล้วเร่งไฟให้กรอบ','นึ่งข้าวเหนียวที่แช่น้ำไว้ข้ามคืน เสิร์ฟคู่กัน'],
+  tip:'ปริมาณน้ำมันในสูตรคิดจากส่วนที่ไก่ดูดซับและที่ต้องเปลี่ยนใหม่ กรองน้ำมันทุกวันเพื่อยืดอายุการใช้งาน'},
+ {id:'moo-ping', name:'หมูปิ้ง 3 ไม้กับข้าวเหนียว', cat:'ของทอดและปิ้ง', min:30, art:['plate','#fdfdf6','#9c4a22','#c8792b','#f6efcf'],
+  ing:[['pork',120],['coconut',20],['garlic',8],['palmSugar',12],['soy',8],['oyster',8],['pepper',0.5],['sticky',100],['skewer',3]],
+  steps:['หั่นหมูชิ้นบางยาว หมักกับกระเทียม น้ำตาลปี๊บ ซีอิ๊วขาว ซอสหอยนางรม พริกไทย และกะทิ ข้ามคืน','เสียบไม้ให้เนื้อแน่นติดกัน','ปิ้งบนเตาถ่านไฟอ่อน พลิกบ่อย ๆ และทากะทิระหว่างปิ้ง','เสิร์ฟกับข้าวเหนียวร้อน'],
+  tip:'เสียบไม้และแช่แข็งไว้เป็นชุด นำออกมาปิ้งตามยอดขายแต่ละวัน ของเสียจะน้อยมาก'},
+ {id:'thaitea', name:'ชาไทยเย็น', cat:'เครื่องดื่ม', min:5, art:['glass','#e58a2e','#f3c79a','#ffffff','#ffffff'],
+  ing:[['thaiTea',12],['condensed',30],['evaporated',30],['sugar',15],['ice',200]],
+  steps:['ชงผงชาในน้ำร้อนจัด 3 ถึง 5 นาที แล้วกรอง','คนน้ำตาลและนมข้นหวานในน้ำชาขณะยังร้อน','เทใส่แก้วที่มีน้ำแข็งเต็ม','ราดนมข้นจืดด้านบน'],
+  tip:'ชงหัวเชื้อชาเข้มข้นเก็บในตู้เย็นได้ 1 วัน ช่วยให้ออกแก้วได้เร็วช่วงลูกค้าเยอะ'}
+];
+let custom = store.get('rc_custom', []);
+const allRecipes = () => RECIPES.concat(custom);
+const findRecipe = id => allRecipes().find(r => r.id === id);
+
+/* ---------- costing ---------- */
+// one ingredient line → {name, qty, unit, cost} for the given number of plates
+function line(ing, plates){
+  if (Array.isArray(ing)){ const c = CAT[ing[0]]; return { key:ing[0], name:c[0], qty:ing[1] * plates, unit:c[2], cost: ing[1] * plates / c[1] * prices[ing[0]] }; }
+  return { key:null, name:ing.name, qty:ing.qty * plates, unit:ing.unit, cost:ing.cost * plates };
+}
+const plateCost = r => r.ing.reduce((s, i) => s + line(i, 1).cost, 0);
+function qtyText(q, unit){
+  if (unit === 'ก.' && q >= 1000) return (q / 1000).toLocaleString('th-TH', {maximumFractionDigits:2}) + ' กก.';
+  if (unit === 'มล.' && q >= 1000) return (q / 1000).toLocaleString('th-TH', {maximumFractionDigits:2}) + ' ลิตร';
+  return q.toLocaleString('th-TH', {maximumFractionDigits:2}) + ' ' + unit;
+}
+const roundUp5 = n => Math.ceil(n / 5) * 5;
+
+/* ---------- illustration (drawn, so no photo rights are involved) ---------- */
+function art(r){
+  const a = r.art || ['plate','#fdfdf6','#c98b4a','#3d8f43','#f6c443'];
+  const photo = store.get('rc_photo_' + r.id, null);
+  if (photo) return `<img src="${photo}" alt="${esc(r.name)}">`;
+  let inner;
+  if (a[0] === 'glass') inner = `<path d="M70 28h60l-9 100a8 8 0 0 1-8 7H87a8 8 0 0 1-8-7z" fill="${a[1]}" stroke="#fff" stroke-width="4"/><path d="M72 46h56l-2 22H74z" fill="${a[2]}"/><rect x="84" y="52" width="14" height="14" rx="3" fill="#fff" opacity=".7"/><rect x="104" y="60" width="12" height="12" rx="3" fill="#fff" opacity=".6"/><path d="M112 12l-8 60" stroke="#c8321f" stroke-width="4" stroke-linecap="round"/>`;
+  else if (a[0] === 'bowl') inner = `<circle cx="100" cy="80" r="62" fill="#fff"/><circle cx="100" cy="80" r="52" fill="${a[1]}"/><path d="M62 78c14-14 28 12 42-2s22 8 34-4" fill="none" stroke="${a[2]}" stroke-width="6" stroke-linecap="round"/><circle cx="82" cy="98" r="10" fill="${a[4]}"/><circle cx="116" cy="96" r="9" fill="${a[4]}"/><circle cx="100" cy="60" r="4" fill="${a[3]}"/><circle cx="124" cy="70" r="4" fill="${a[3]}"/><circle cx="76" cy="66" r="4" fill="${a[3]}"/>`;
+  else inner = `<circle cx="100" cy="80" r="64" fill="#fff"/><circle cx="100" cy="80" r="50" fill="#f2f2ea"/><ellipse cx="82" cy="84" rx="30" ry="26" fill="${a[1]}"/><ellipse cx="118" cy="76" rx="28" ry="24" fill="${a[2]}"/><circle cx="126" cy="94" r="12" fill="${a[4]}"/><circle cx="104" cy="60" r="5" fill="${a[3]}"/><circle cx="122" cy="66" r="5" fill="${a[3]}"/><circle cx="112" cy="84" r="5" fill="${a[3]}"/>`;
+  return `<svg viewBox="0 0 200 160" role="img" aria-label="ภาพวาดประกอบ ${esc(r.name)}"><rect width="200" height="160" fill="#dfe8cf"/>${inner}</svg>`;
+}
+
+/* ---------- views ---------- */
+const TABS = ['recipes','plan','prices','mine'];
+let filter = 'ทั้งหมด';
+function route(){
+  const h = location.hash.slice(1);
+  const rec = h.startsWith('r-') ? findRecipe(h.slice(2)) : null;
+  const tab = rec ? 'detail' : TABS.includes(h) ? h : 'recipes';
+  ['recipes','detail','plan','prices','mine'].forEach(n => $('v-' + n).classList.toggle('on', n === tab));
+  document.querySelectorAll('nav.tabs a').forEach(a => a.dataset.tab === (rec ? 'recipes' : tab) ? a.setAttribute('aria-current','page') : a.removeAttribute('aria-current'));
+  if (tab === 'recipes') renderCards();
+  if (tab === 'detail') renderDetail(rec);
+  if (tab === 'plan') renderPlan();
+  if (tab === 'prices') renderPrices();
+  scrollTo(0, 0);
+}
+function renderCards(){
+  const cats = ['ทั้งหมด', ...new Set(allRecipes().map(r => r.cat))];
+  $('chips').innerHTML = cats.map(c => `<button type="button" aria-pressed="${c === filter}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+  $('cards').innerHTML = allRecipes().filter(r => filter === 'ทั้งหมด' || r.cat === filter).map(r => {
+    const c = plateCost(r);
+    return `<a class="rc" href="#r-${r.id}"><div class="pic">${art(r)}</div><div class="body"><b>${esc(r.name)}</b><small>${esc(r.cat)}${r.min ? ' · ' + r.min + ' นาที' : ''}</small><span>ต้นทุน <span class="cost">${b2(c)}</span> บาท · ขายราว ${b0(roundUp5((c + 5) / 0.45))} บาท</span></div></a>`;
+  }).join('');
+}
+
+let dState = { plates:10, pack:2, other:3, pct:45, price:null, perDay:50 };
+function renderDetail(r){
+  const isCustom = custom.includes(r);
+  $('v-detail').innerHTML = `
+  <a class="back" href="#recipes">&larr; กลับไปสูตรทั้งหมด</a>
+  <div class="detail">
+    <div class="card">
+      <div class="hero"><div class="pic" id="dPic">${art(r)}</div>
+        <div><h2>${esc(r.name)}</h2><div class="note" style="margin:0">${esc(r.cat)}${r.min ? ' · ใช้เวลาราว ' + r.min + ' นาที' : ''}</div>
+          <div class="row" style="margin-top:8px"><label class="btn small alt" for="dPhoto" style="cursor:pointer">ใส่รูปถ่ายของฉัน</label><input type="file" id="dPhoto" accept="image/*" hidden>
+          ${store.get('rc_photo_' + r.id, null) ? '<button class="btn small danger" id="dPhotoDel" type="button">ลบรูป</button>' : ''}</div></div></div>
+      <div class="row"><label class="f" style="max-width:170px">จำนวนจานที่จะทำ<input type="number" id="dPlates" min="1" max="2000" value="${dState.plates}" inputmode="numeric"></label></div>
+      <h3>วัตถุดิบ</h3>
+      <div class="tbl-wrap"><table class="t" id="dIng"></table></div>
+      ${r.steps && r.steps.length ? `<h3>วิธีทำ</h3><ol class="steps">${r.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>` : ''}
+      ${r.tip ? `<div class="tip"><b>เคล็ดลับสำหรับร้าน</b> ${esc(r.tip)}</div>` : ''}
+    </div>
+    <div class="card">
+      <h2>ต้นทุนและราคาขาย</h2>
+      <div class="fields">
+        <label class="f">ค่าบรรจุภัณฑ์ต่อจาน<input type="number" id="dPack" min="0" step="0.5" value="${dState.pack}" inputmode="decimal"></label>
+        <label class="f">ค่าแก๊สและอื่น ๆ ต่อจาน<input type="number" id="dOther" min="0" step="0.5" value="${dState.other}" inputmode="decimal"></label>
+        <label class="f">ต้นทุนรวมเป็นกี่ % ของราคาขาย<input type="number" id="dPct" min="10" max="90" step="1" value="${dState.pct}" inputmode="numeric"></label>
+        <label class="f">ราคาที่ตั้งขายจริง<input type="number" id="dPrice" min="0" step="1" placeholder="ใช้ราคาแนะนำ" value="${dState.price ?? ''}" inputmode="decimal"></label>
+        <label class="f">ขายได้กี่จานต่อวัน<input type="number" id="dDay" min="0" step="1" value="${dState.perDay}" inputmode="numeric"></label>
+      </div>
+      <div class="kv" id="dOut" aria-live="polite"></div>
+      <p class="note">หลักคิดทั่วไปคือคุมต้นทุนวัตถุดิบไว้ราว 30 ถึง 35% ของราคาขาย ร้านข้างทางและร้านตามสั่งมักสูงกว่านั้น จึงตั้งค่าเริ่มต้นของต้นทุนรวมไว้ที่ 45% ปรับได้ตามร้านของคุณ กำไรที่แสดงยังไม่หักค่าเช่า ค่าแรง และค่าน้ำค่าไฟ</p>
+      <div class="row" style="margin-top:14px"><button class="btn" id="dAdd" type="button">เพิ่มในรายการซื้อของ</button>${isCustom ? '<button class="btn danger" id="dDel" type="button">ลบสูตรนี้</button>' : ''}<span id="dMsg" class="note" style="margin:0" role="status"></span></div>
+    </div>
+  </div>`;
+  const upd = () => {
+    const v = id => { const n = parseFloat($(id).value); return isFinite(n) && n >= 0 ? n : 0; };
+    dState.plates = Math.max(1, Math.round(v('dPlates')) || 1); dState.pack = v('dPack'); dState.other = v('dOther');
+    dState.pct = Math.min(90, Math.max(10, v('dPct') || 45)); dState.perDay = v('dDay'); dState.price = $('dPrice').value === '' ? null : v('dPrice');
+    const lines = r.ing.map(i => line(i, dState.plates)), food = lines.reduce((s, l) => s + l.cost, 0);
+    $('dIng').innerHTML = `<tr><th>วัตถุดิบ</th><th class="r">ปริมาณ</th><th class="r">ต้นทุน (บาท)</th></tr>` + lines.map(l => `<tr><td>${esc(l.name)}</td><td class="r">${qtyText(l.qty, l.unit)}</td><td class="r">${b2(l.cost)}</td></tr>`).join('')
+      + `<tr class="sum"><td>รวม ${dState.plates} จาน</td><td></td><td class="r">${b2(food)}</td></tr>`;
+    const per = food / dState.plates + dState.pack + dState.other, suggest = roundUp5(per / (dState.pct / 100));
+    const price = dState.price ?? suggest, profit = price - per, pct = price > 0 ? per / price * 100 : 0;
+    $('dOut').innerHTML = `<div><span>ต้นทุนรวมต่อจาน</span><strong>${b2(per)} ฿</strong></div><div><span>ราคาขายแนะนำ</span><strong>${b0(suggest)} ฿</strong></div>
+      <div><span>กำไรต่อจาน ที่ราคา ${b0(price)} ฿</span><strong>${b2(profit)} ฿</strong> <span class="pill ${profit > 0 && pct <= 50 ? 'good' : 'bad'}" style="display:inline-block">ต้นทุน ${pct.toFixed(0)}%</span></div>
+      <div><span>กำไรต่อวัน</span><strong>${b0(profit * dState.perDay)} ฿</strong></div>
+      <div class="wide"><span>กำไรต่อเดือน (ขาย 26 วัน)</span><strong>${b0(profit * dState.perDay * 26)} ฿</strong></div>`;
+  };
+  $('v-detail').oninput = e => { if (e.target.type === 'number') upd(); };
+  upd();
+  $('dAdd').onclick = () => { const plan = store.get('rc_plan', {}); plan[r.id] = (plan[r.id] || 0) + dState.plates; store.set('rc_plan', plan); $('dMsg').textContent = 'เพิ่ม ' + dState.plates + ' จานแล้ว ดูได้ที่แท็บรายการซื้อของ'; };
+  if (isCustom) $('dDel').onclick = () => { custom = custom.filter(x => x !== r); store.set('rc_custom', custom); const plan = store.get('rc_plan', {}); delete plan[r.id]; store.set('rc_plan', plan); location.hash = '#recipes'; };
+  $('dPhoto').onchange = e => { const f = e.target.files[0]; if (!f) return;
+    const img = new Image(), url = URL.createObjectURL(f);
+    img.onload = () => { const s = Math.min(1, 640 / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = img.width * s; c.height = img.height * s;
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      if (store.set('rc_photo_' + r.id, c.toDataURL('image/jpeg', .8))) renderDetail(r); else $('dMsg').textContent = 'บันทึกรูปไม่ได้ พื้นที่เก็บข้อมูลของเบราว์เซอร์เต็ม ลองลบรูปของสูตรอื่นก่อน'; };
+    img.onerror = () => { $('dMsg').textContent = 'เปิดไฟล์รูปนี้ไม่ได้ ลองใช้ไฟล์ JPG หรือ PNG'; };
+    img.src = url; };
+  const del = $('dPhotoDel'); if (del) del.onclick = () => { try { localStorage.removeItem('rc_photo_' + r.id); } catch(e){} renderDetail(r); };
+}
+
+function planData(){
+  const plan = store.get('rc_plan', {}), agg = new Map(); let used = 0;
+  Object.entries(plan).forEach(([id, plates]) => { const r = findRecipe(id); if (!r) return;
+    r.ing.forEach(i => { const l = line(i, plates), k = l.key || l.name + '|' + l.unit; const a = agg.get(k) || { key:l.key, name:l.name, unit:l.unit, qty:0, cost:0 }; a.qty += l.qty; a.cost += l.cost; agg.set(k, a); used += l.cost; }); });
+  const rows = [...agg.values()].map(a => { if (!a.key) return { ...a, buy:'ตามที่ใช้', pay:a.cost };
+    const c = CAT[a.key], packs = Math.ceil(a.qty / c[1] - 1e-9); return { ...a, buy: packs + ' × ' + c[3], pay: packs * prices[a.key] }; }).sort((x, y) => y.pay - x.pay);
+  return { plan, rows, used, pay: rows.reduce((s, r) => s + r.pay, 0) };
+}
+function renderPlan(){
+  const d = planData(), ids = Object.keys(d.plan).filter(findRecipe);
+  $('planItems').innerHTML = ids.length ? ids.map(id => `<div class="plan-item"><span>${esc(findRecipe(id).name)}</span><input type="number" min="1" value="${d.plan[id]}" data-plan="${id}" aria-label="จำนวนจาน ${esc(findRecipe(id).name)}" inputmode="numeric"><button class="btn small danger" type="button" data-rm="${id}">ลบ</button></div>`).join('') : '<p class="empty">ยังไม่มีเมนูในรายการ</p>';
+  $('planTable').innerHTML = d.rows.length ? `<tr><th>วัตถุดิบ</th><th class="r">ใช้</th><th class="r">ต้องซื้อ</th><th class="r">จ่าย (บาท)</th></tr>` + d.rows.map(r => `<tr><td>${esc(r.name)}</td><td class="r">${qtyText(r.qty, r.unit)}</td><td class="r">${esc(r.buy)}</td><td class="r">${b0(r.pay)}</td></tr>`).join('')
+    + `<tr class="sum"><td>เงินที่ต้องเตรียม</td><td></td><td></td><td class="r">${b0(d.pay)}</td></tr><tr class="sum"><td>มูลค่าที่ใช้จริง</td><td></td><td></td><td class="r">${b0(d.used)}</td></tr>` : '<tr><td class="empty">เพิ่มเมนูก่อน แล้วรายการของที่ต้องซื้อจะแสดงที่นี่</td></tr>';
+}
+function renderPrices(){
+  $('priceGrid').innerHTML = Object.entries(CAT).map(([k, c]) => `<label><span>${esc(c[0])}<small>${esc(c[3])}</small></span><input type="number" min="0" step="1" value="${prices[k]}" data-price="${k}" inputmode="decimal"></label>`).join('');
+}
+
+/* ---------- events ---------- */
+$('chips').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ filter = b.dataset.cat; renderCards(); } });
+$('planItems').addEventListener('change', e => { const id = e.target.dataset.plan; if (!id) return; const plan = store.get('rc_plan', {}); plan[id] = Math.max(1, parseInt(e.target.value) || 1); store.set('rc_plan', plan); renderPlan(); });
+$('planItems').addEventListener('click', e => { const id = e.target.dataset.rm; if (!id) return; const plan = store.get('rc_plan', {}); delete plan[id]; store.set('rc_plan', plan); renderPlan(); });
+$('copyPlan').addEventListener('click', e => { const d = planData(), b = e.currentTarget;
+  const text = 'รายการซื้อของ\n' + d.rows.map(r => `- ${r.name}: ${r.buy} (ใช้ ${qtyText(r.qty, r.unit)}) ${b0(r.pay)} บาท`).join('\n') + `\nรวม ${b0(d.pay)} บาท`;
+  const done = ok => { b.textContent = ok ? 'คัดลอกแล้ว' : 'คัดลอกไม่ได้'; setTimeout(() => b.textContent = 'คัดลอกรายการ', 1800); };
+  try { navigator.clipboard.writeText(text).then(() => done(true), () => done(false)); } catch(err){ done(false); } });
+$('priceGrid').addEventListener('input', e => { const k = e.target.dataset.price; if (!k) return; const v = parseFloat(e.target.value); prices[k] = isFinite(v) && v >= 0 ? v : 0; store.set('rc_prices', prices); });
+$('resetPrices').addEventListener('click', () => { prices = Object.assign({}, DEFAULT_PRICES); store.set('rc_prices', {}); renderPrices(); });
+$('mSave').addEventListener('click', () => {
+  const name = $('mName').value.trim(), serv = Math.max(1, parseFloat($('mServ').value) || 1), msg = $('mMsg');
+  const ing = $('mIng').value.split('\n').map(s => s.split(',').map(x => x.trim())).filter(p => p[0]).map(p => ({ name:p[0], qty:(parseFloat(p[1]) || 0) / serv, unit:p[2] || 'หน่วย', cost:(parseFloat(p[3]) || 0) / serv }));
+  if (!name){ msg.textContent = 'กรุณาใส่ชื่อเมนู'; return; }
+  if (!ing.length){ msg.textContent = 'กรุณาใส่วัตถุดิบอย่างน้อย 1 อย่าง ตามรูปแบบ ชื่อ, ปริมาณ, หน่วย, ต้นทุน'; return; }
+  const r = { id:'c' + Date.now().toString(36), name, cat:'สูตรของฉัน', ing, steps:$('mSteps').value.split('\n').map(s => s.trim()).filter(Boolean) };
+  custom.push(r);
+  if (!store.set('rc_custom', custom)){ custom.pop(); msg.textContent = 'บันทึกไม่ได้ เบราว์เซอร์นี้ไม่อนุญาตให้เก็บข้อมูล'; return; }
+  ['mName','mIng','mSteps'].forEach(id => $(id).value = ''); msg.textContent = '';
+  location.hash = '#r-' + r.id;
+});
+addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
