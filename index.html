@@ -186,6 +186,13 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
 .pos-btn:active{transform:translateY(3px);box-shadow:none}
 .pos-btn b{font-weight:600;line-height:1.3}
 .pos-btn span{color:var(--chili);font-weight:700;font-variant-numeric:tabular-nums}
+
+/* notice shown inside in-app browsers, where printing and saving files often fail */
+.inapp{max-width:1080px;margin:12px auto 0;padding:10px 14px;border-radius:12px;background:#fff4d6;border:1px solid #e2a100;color:#5a3d00;font-size:.92rem}
+.site-ft .sis{display:flex;flex-wrap:wrap;gap:6px 14px;flex-basis:100%}
+
+/* phones: two compact columns so 40+ recipes do not become one endless list */
+@media(max-width:520px){.cards{grid-template-columns:1fr 1fr;gap:10px}.rc .body{padding:9px 10px 11px;gap:2px}.rc b{font-size:.93rem}.rc .body span,.rc small{font-size:.78rem;line-height:1.35}}
 </style>
 </head>
 <body>
@@ -253,7 +260,7 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
     <label class="f" style="margin:12px 0">ชื่อร้าน<input type="text" id="mShop" placeholder="เช่น ครัวป้าน้อย"></label>
     <div id="menuRows"></div>
     <div id="menuPrev"></div>
-    <p class="note">ป้ายเมนูใช้เมนูจากรายการด้านบน ราคาตั้งต้นคือราคาขายแนะนำ แก้เป็นราคาของร้านคุณได้ พิมพ์ออกมาเป็นกระดาษ A4 แนวตั้ง</p>
+    <p class="note">ป้ายเมนูใช้เมนูจากรายการด้านบน ราคาตั้งต้นคือราคาขายแนะนำ แก้เป็นราคาของร้านคุณได้ พิมพ์ออกมาเป็นกระดาษ A4 แนวตั้ง ถ้ากดพิมพ์แล้วไม่มีอะไรเกิดขึ้น ให้เปิดเว็บนี้ใน Chrome หรือ Safari แทนการเปิดจากในแอป Facebook หรือ LINE</p>
   </div>
 </section>
 
@@ -333,7 +340,7 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
 </section>
 
 </div></main>
-<footer class="site-ft"><button type="button" data-open="dlgGuide">วิธีใช้</button><button type="button" data-open="dlgPolicy">นโยบายความเป็นส่วนตัวและความปลอดภัย</button><a href="https://github.com/rookiekrit6-dotcom/FoodTool/issues">แจ้งปัญหาหรือเสนอแนะ</a><span>ใช้ฟรี ไม่ต้องสมัครสมาชิก</span></footer>
+<footer class="site-ft"><button type="button" data-open="dlgGuide">วิธีใช้</button><button type="button" data-open="dlgPolicy">นโยบายความเป็นส่วนตัวและความปลอดภัย</button><a href="https://github.com/rookiekrit6-dotcom/FoodTool/issues">แจ้งปัญหาหรือเสนอแนะ</a><span>ใช้ฟรี ไม่ต้องสมัครสมาชิก</span><span class="sis">เครื่องมืออื่นจากผู้จัดทำเดียวกัน: <a href="https://rookiekrit6-dotcom.github.io/Seller-Tool/">กำไรแม่ค้า</a><a href="https://rookiekrit6-dotcom.github.io/Worksheet/">ใบงานพร้อมพิมพ์</a></span></footer>
 <dialog class="dlg" id="dlgGuide" aria-labelledby="dlgGuideT"><div class="dlg-h"><b id="dlgGuideT">วิธีใช้ สูตรเปิดร้าน</b><button class="dlg-x" type="button" data-close>ปิด</button></div><div class="dlg-b"><h3>ดูสูตรและต้นทุน</h3><ol><li>เลือกเมนูจากหน้าสูตร แล้วใส่จำนวนจานที่จะทำ ปริมาณวัตถุดิบจะปรับตาม</li><li>ใส่ค่าบรรจุภัณฑ์และค่าแก๊สต่อจาน เพื่อดูต้นทุนรวมและราคาขายที่แนะนำ</li><li>ใส่ราคาที่ตั้งขายจริงและจำนวนจานต่อวัน เพื่อดูกำไรต่อวันและต่อเดือน</li></ol>
 <h3>แก้ราคาวัตถุดิบ</h3><p>ราคาตั้งต้นเป็นค่าประมาณ เปิดแท็บราคาของ แล้วแก้เป็นราคาที่คุณซื้อจริง ต้นทุนทุกสูตรจะคำนวณใหม่ทันที</p>
 <h3>รายการซื้อของ</h3><ol><li>ในหน้าสูตร กดเพิ่มในรายการซื้อของ ทำซ้ำกับทุกเมนูที่จะขาย</li><li>เปิดแท็บซื้อของ จะเห็นของที่ต้องซื้อรวมทุกเมนู และเงินที่ต้องเตรียม</li><li>กดคัดลอกรายการ เพื่อส่งเข้า LINE หรือจดไปตลาด</li><li>ด้านล่างมีสรุปแผนร้านใน 1 หน้า แสดงรายได้ ต้นทุน และเงินที่เจ้าของเหลือต่อเดือน พร้อมบอกว่าเมนูไหนทำกำไรมากที่สุด</li><li>ถัดลงไปมีป้ายเมนูร้าน ใส่ชื่อร้าน แก้ราคา แล้วกดพิมพ์ป้ายเมนูติดหน้าร้านได้</li></ol>
@@ -845,6 +852,12 @@ document.addEventListener('click', e => {
   const c = e.target.closest('[data-close]'); if (c){ c.closest('dialog').close(); return; }
   if (e.target.tagName === 'DIALOG') e.target.close();
 });
+/* ---------- in-app browser notice ---------- */
+if (/FBAN|FBAV|FB_IAB|Line\/|Instagram|TikTok/i.test(navigator.userAgent)){
+  const n = document.createElement('div'); n.className = 'inapp'; n.setAttribute('role', 'note');
+  n.textContent = 'คุณกำลังเปิดเว็บนี้จากในแอป ปุ่มพิมพ์และปุ่มบันทึกรูปอาจใช้ไม่ได้ แนะนำให้กดเมนูมุมขวาบนแล้วเลือกเปิดในเบราว์เซอร์ เช่น Chrome หรือ Safari';
+  const m = document.querySelector('main'); m.insertBefore(n, m.firstChild);
+}
 </script>
 </body>
 </html>
