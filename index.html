@@ -175,6 +175,11 @@ dialog.dlg::backdrop{background:rgba(10,20,18,.5)}
 <main><div class="wrap">
 
 <section class="view" id="v-recipes">
+  <div class="fields" style="margin-bottom:12px;max-width:560px">
+    <label class="f">ค้นหาเมนู<input type="text" id="q" placeholder="เช่น กะเพรา ต้มยำ ชา"></label>
+    <label class="f">เรียงตาม
+      <select id="sort" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;width:100%"><option value="">ลำดับปกติ</option><option value="cost">ต้นทุนต่ำสุด</option><option value="profit">กำไรต่อจานสูงสุด</option><option value="time">ทำเร็วที่สุด</option></select></label>
+  </div>
   <div class="chips" id="chips" role="group" aria-label="หมวดอาหาร"></div>
   <div class="cards" id="cards"></div>
   <p class="note">ต้นทุนคำนวณจากราคาวัตถุดิบโดยประมาณ ราคาจริงต่างกันตามพื้นที่และฤดูกาล แก้เป็นราคาตลาดใกล้คุณได้ที่แท็บราคาวัตถุดิบ รูปประกอบเป็นภาพวาด คุณใส่รูปถ่ายอาหารของร้านตัวเองได้ในหน้าสูตร</p>
@@ -314,7 +319,8 @@ const CAT = {
   mint:['ใบสะระแหน่',1000,'ก.','1 กก.',100], glassNoodle:['วุ้นเส้นแห้ง',500,'ก.','ห่อ 500 ก.',75], celery:['ขึ้นฉ่าย',1000,'ก.','1 กก.',90],
   banana:['กล้วยน้ำว้า',12,'ลูก','1 หวี ราว 12 ลูก',35], sesame:['งาขาว',500,'ก.','ถุง 500 ก.',70], cocoa:['ผงโกโก้',500,'ก.','ถุง 500 ก.',150],
   tapioca:['แป้งมัน',500,'ก.','ถุง 500 ก.',20], morningGlory:['ผักบุ้ง',1000,'ก.','1 กก.',30], redCurry:['พริกแกงพะแนง',1000,'ก.','1 กก.',120],
-  corn:['ข้าวโพดหวานต้ม',1000,'ก.','1 กก.',45], chiliSauce:['น้ำจิ้มไก่',700,'มล.','ขวด 700 มล.',35], softTofu:['เต้าหู้ไข่',4,'หลอด','แพ็ก 4 หลอด',30]
+  corn:['ข้าวโพดหวานต้ม',1000,'ก.','1 กก.',45], chiliSauce:['น้ำจิ้มไก่',700,'มล.','ขวด 700 มล.',35], softTofu:['เต้าหู้ไข่',4,'หลอด','แพ็ก 4 หลอด',30],
+  instantNoodle:['บะหมี่กึ่งสำเร็จรูป',10,'ซอง','แพ็ก 10 ซอง',65], bread:['ขนมปังแผ่น',20,'แผ่น','1 แถว ราว 20 แผ่น',42], margarine:['มาการีน',1000,'ก.','1 กก.',85], syrup:['น้ำหวานเข้มข้นกลิ่นสละ',710,'มล.','ขวด 710 มล.',62]
 };
 const DEFAULT_PRICES = Object.fromEntries(Object.entries(CAT).map(([k, c]) => [k, c[4]]));
 let prices = Object.assign({}, DEFAULT_PRICES, store.get('rc_prices', {}));
@@ -440,7 +446,31 @@ const RECIPES = [
  {id:'limetea', name:'ชามะนาว', cat:'เครื่องดื่ม', min:5, art:['glass','#c8742a','#e9b36a','#ffffff','#ffffff'],
   ing:[['thaiTea',8],['lime',1.5],['sugar',30],['ice',200]],
   steps:['ชงผงชาในน้ำร้อน 3 นาที แล้วกรอง','คนน้ำตาลในน้ำชาขณะยังร้อน พักให้อุ่น','บีบน้ำมะนาวลงไป ชิมรสให้เปรี้ยวหวานเท่ากัน','เทใส่แก้วที่มีน้ำแข็งเต็ม'],
-  tip:'ใส่น้ำมะนาวหลังน้ำชาเย็นลงแล้ว สีจะใสและไม่ขม ราคามะนาวขึ้นลงตามฤดู ควรปรับต้นทุนบ่อย'}
+  tip:'ใส่น้ำมะนาวหลังน้ำชาเย็นลงแล้ว สีจะใสและไม่ขม ราคามะนาวขึ้นลงตามฤดู ควรปรับต้นทุนบ่อย'},
+ {id:'padmama', name:'ผัดมาม่าหมูสับใส่ไข่', cat:'เส้น', min:6, art:['plate','#fdfdf6','#e2b25a','#2f7d32','#f6c443'],
+  ing:[['instantNoodle',1],['porkMince',40],['egg',1],['kale',30],['garlic',5],['oil',15],['oyster',8],['sugar',2]],
+  steps:['ลวกเส้นพอคลายตัว สะเด็ดน้ำ','เจียวกระเทียม ผัดหมูสับจนสุก แล้วตอกไข่ลงไปยี','ใส่เส้นและคะน้า ปรุงด้วยซอสหอยนางรม น้ำตาล และผงปรุงรสในซองครึ่งหนึ่ง','ผัดไฟแรงจนเส้นแห้งและหอม'],
+  tip:'ต้นทุนต่ำและทำเร็ว เป็นเมนูที่นักเรียนนักศึกษาสั่งบ่อย เพิ่มตัวเลือกใส่ชีสหรือไส้กรอกเพื่อบวกราคาได้'},
+ {id:'yummama', name:'ยำมาม่า', cat:'ยำและตำ', min:8, art:['plate','#fdfdf6','#e8c98a','#c8321f','#f08a5d'],
+  ing:[['instantNoodle',1],['porkMince',40],['shrimp',30],['tomato',30],['shallot',15],['celery',10],['chili',5],['lime',1.5],['fishSauce',12],['sugar',8]],
+  steps:['ลวกเส้น หมูสับ และกุ้งจนสุก สะเด็ดน้ำ','ผสมน้ำยำจากน้ำมะนาว น้ำปลา น้ำตาล และพริกซอย','คลุกเส้นและเนื้อสัตว์กับน้ำยำ','ใส่มะเขือเทศ หอมแดง และขึ้นฉ่าย คลุกเบา ๆ'],
+  tip:'ใช้น้ำยำขวดเดียวกับยำวุ้นเส้น จึงเพิ่มเมนูได้โดยไม่ต้องเตรียมของเพิ่มมาก'},
+ {id:'garlicchicken', name:'ข้าวไก่ทอดกระเทียม', cat:'ข้าวราด', min:12, art:['plate','#fdfdf6','#c8792b','#2f7d32','#e9c46a'],
+  ing:[['rice',100],['chicken',110],['garlic',20],['flour',15],['oyster',8],['soy',5],['pepper',0.5],['oil',40],['cucumber',30]],
+  steps:['หั่นไก่เป็นชิ้นพอดีคำ หมักกับซอสหอยนางรม ซีอิ๊วขาว และพริกไทย','คลุกแป้งทอดกรอบบาง ๆ','ทอดจนเหลืองกรอบ ตักขึ้น แล้วเจียวกระเทียมสับในน้ำมันเดิม','คลุกไก่กับกระเทียมเจียว ตักราดข้าว เสิร์ฟกับแตงกวา'],
+  tip:'ทอดไก่ไว้ล่วงหน้าเป็นชุด ตอนขายแค่ทอดซ้ำสั้น ๆ ให้กรอบ ช่วยลดเวลารอช่วงเที่ยง'},
+ {id:'shrimpporridge', name:'ข้าวต้มกุ้ง', cat:'ข้าวราด', min:25, art:['bowl','#f4eedc','#fdfdf6','#2f7d32','#f08a5d'],
+  ing:[['rice',50],['shrimp',60],['ginger',5],['scallion',5],['garlic',5],['soy',10],['pepper',0.5],['oil',5]],
+  steps:['ต้มข้าวกับน้ำมาก ๆ จนเม็ดข้าวบาน','ปรุงด้วยซีอิ๊วขาว ใส่กุ้ง ต้มพอสุก','เจียวกระเทียมเตรียมไว้','ตักใส่ชาม โรยขิงซอย ต้นหอม กระเทียมเจียว และพริกไทย'],
+  tip:'ใช้หม้อข้าวต้มเดียวกับข้าวต้มหมู แยกใส่เนื้อสัตว์ตอนลูกค้าสั่ง จะขายได้สองเมนู'},
+ {id:'toast', name:'ขนมปังปิ้งเนยนม', cat:'ของทอดและปิ้ง', min:5, art:['plate','#fdfdf6','#e0b36a','#f6efcf','#f6e7b0'],
+  ing:[['bread',2],['margarine',10],['condensed',20],['sugar',3]],
+  steps:['ทามาการีนบนขนมปังทั้งสองด้าน','ปิ้งบนเตาไฟอ่อนจนเหลืองกรอบ','ราดนมข้นหวานและโรยน้ำตาล','หั่นเป็นชิ้นพอดีคำ'],
+  tip:'ขายคู่กับเครื่องดื่มเป็นชุดได้ กำไรต่อชุดสูงกว่าขายแยก และใช้นมข้นหวานร่วมกับเมนูน้ำ'},
+ {id:'pinkmilk', name:'นมชมพูเย็น', cat:'เครื่องดื่ม', min:3, art:['glass','#f3a6c0','#fbd9e5','#ffffff','#ffffff'],
+  ing:[['syrup',30],['evaporated',40],['condensed',15],['ice',200]],
+  steps:['ผสมน้ำหวานเข้มข้นกับนมข้นหวานและน้ำร้อนเล็กน้อย','คนให้เข้ากัน','เทใส่แก้วที่มีน้ำแข็งเต็ม','ราดนมข้นจืดด้านบน'],
+  tip:'ทำได้เร็วที่สุดในกลุ่มเครื่องดื่ม ไม่ต้องชง เหมาะกับช่วงที่ลูกค้าต่อคิวยาว'}
 ];
 let custom = store.get('rc_custom', []);
 const allRecipes = () => RECIPES.concat(custom);
@@ -491,10 +521,12 @@ function route(){
 function renderCards(){
   const cats = ['ทั้งหมด', ...new Set(allRecipes().map(r => r.cat))];
   $('chips').innerHTML = cats.map(c => `<button type="button" aria-pressed="${c === filter}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
-  $('cards').innerHTML = allRecipes().filter(r => filter === 'ทั้งหมด' || r.cat === filter).map(r => {
-    const c = plateCost(r);
-    return `<a class="rc" href="#r-${r.id}"><div class="pic">${art(r)}</div><div class="body"><b>${esc(r.name)}</b><small>${esc(r.cat)}${r.min ? ' · ' + r.min + ' นาที' : ''}</small><span>ต้นทุน <span class="cost">${b2(c)}</span> บาท · ขายราว ${b0(roundUp5((c + 5) / 0.45))} บาท</span></div></a>`;
-  }).join('');
+  const q = $('q').value.trim(), sort = $('sort').value;
+  const list = allRecipes().filter(r => (filter === 'ทั้งหมด' || r.cat === filter) && (!q || r.name.includes(q))).map(r => { const c = plateCost(r), price = roundUp5((c + 5) / 0.45); return { r, c, price, profit: price - c - 5 }; });
+  if (sort === 'cost') list.sort((a, b) => a.c - b.c);
+  if (sort === 'profit') list.sort((a, b) => b.profit - a.profit);
+  if (sort === 'time') list.sort((a, b) => (a.r.min || 999) - (b.r.min || 999));
+  $('cards').innerHTML = list.length ? list.map(x => `<a class="rc" href="#r-${x.r.id}"><div class="pic">${art(x.r)}</div><div class="body"><b>${esc(x.r.name)}</b><small>${esc(x.r.cat)}${x.r.min ? ' · ' + x.r.min + ' นาที' : ''}</small><span>ต้นทุน <span class="cost">${b2(x.c)}</span> บาท · ขายราว ${b0(x.price)} บาท</span><small>กำไรราว ${b0(x.profit)} บาทต่อจาน</small></div></a>`).join('') : '<p class="empty">ไม่พบเมนูที่ค้นหา ลองพิมพ์คำอื่น หรือเพิ่มสูตรของคุณเองที่แท็บเพิ่มสูตร</p>';
 }
 
 let dState = { plates:10, pack:2, other:3, pct:45, price:null, perDay:50 };
@@ -615,6 +647,8 @@ $('v-breakeven').addEventListener('input', e => {
   if (e.target.id === 'beRecipe' && e.target.value){ const r = findRecipe(e.target.value), c = plateCost(r) + 5; $('beCost').value = c.toFixed(2); $('bePrice').value = roundUp5(c / 0.45); }
   calcBE();
 });
+$('q').addEventListener('input', renderCards);
+$('sort').addEventListener('change', renderCards);
 $('chips').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ filter = b.dataset.cat; renderCards(); } });
 $('planItems').addEventListener('change', e => { const id = e.target.dataset.plan; if (!id) return; const plan = store.get('rc_plan', {}); plan[id] = Math.max(1, parseInt(e.target.value) || 1); store.set('rc_plan', plan); renderPlan(); });
 $('planItems').addEventListener('click', e => { const id = e.target.dataset.rm; if (!id) return; const plan = store.get('rc_plan', {}); delete plan[id]; store.set('rc_plan', plan); renderPlan(); });
